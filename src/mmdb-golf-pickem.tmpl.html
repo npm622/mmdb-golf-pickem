@@ -3,6 +3,25 @@
         <p>This is the Masters Pick 'Em Page</p>
     </div>
     <div class="row">
-        <pre ng-repeat="entry in golfPickem.entries">{{entry | json}}</pre>
+        <table class="table table-striped table-bordered table-hover table-sm">
+            <tbody>
+                <tr>
+                    <th>participant</th>
+                    <td>pick 1</td>
+                    <td>pick 2</td>
+                    <td>pick 3</td>
+                    <td>pick 4</td>
+                    <td>pick 5</td>
+                </tr>
+                <tr ng-repeat="entry in golfPickem.entries">
+                    <th>{{entry.name}}</th>
+                    <td>{{entry.pick1}}</td>
+                    <td>{{entry.pick2}}</td>
+                    <td>{{entry.pick3}}</td>
+                    <td>{{entry.pick4}}</td>
+                    <td>{{entry.pick5}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
