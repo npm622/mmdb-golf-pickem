@@ -12,18 +12,17 @@
 			parsed.name = entry.title.$t;
 			
 			var contents = entry.content.$t.split(",");
-			console.log(contents);
 			var i;
 			for ( i = 0; i < contents.length; i++) {
-				var content = contents[i];
-				var keyValue = content.split(":");
+				var keyValue = contents[i].split(":");
 				
-				var key = keyValue[0];
+				var key = keyValue[0].trim();
 				var value = keyValue[1].trim();
 				
 				parsed[key] = value;
 			}
-			
+
+			console.log( parsed );
 			return parsed;
 		}
 		
@@ -64,5 +63,5 @@
 
 	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <pre>{{golfPickem.stubbed}}</pre>\n    </div>\n</div>");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <pre ng-repeat=\"entry in golfPickem.entries\">{{entry}}</pre>\n    </div>\n</div>");}]);
 }());

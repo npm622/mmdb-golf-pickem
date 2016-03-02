@@ -12,18 +12,17 @@
 			parsed.name = entry.title.$t;
 			
 			var contents = entry.content.$t.split(",");
-			console.log(contents);
 			var i;
 			for ( i = 0; i < contents.length; i++) {
-				var content = contents[i];
-				var keyValue = content.split(":");
+				var keyValue = contents[i].split(":");
 				
-				var key = keyValue[0];
+				var key = keyValue[0].trim();
 				var value = keyValue[1].trim();
 				
 				parsed[key] = value;
 			}
-			
+
+			console.log( parsed );
 			return parsed;
 		}
 		
