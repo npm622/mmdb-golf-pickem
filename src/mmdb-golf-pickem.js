@@ -29,6 +29,8 @@
 		var vm = this;
 
 		console.log( Entries.live );
+		
+		vm.stubbed = Entries.stubbed;
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
@@ -36,7 +38,7 @@
 	.config( function config($stateProvider) {
 		$stateProvider.state( 'golfPickem', {
 			url : '/golfPickem',
-			templateUrl : 'golf-pickem.tmpl.html',
+			templateUrl : 'mmdb-golf-pickem.tmpl.html',
 			controller : 'GolfPickemCtrl',
 			controllerAs : 'golfPickem',
 			data : {
