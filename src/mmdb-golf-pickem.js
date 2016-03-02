@@ -13,9 +13,9 @@
 			
 			var contents = entry.content.$t.split(",");
 			var i;
-			var picks = [];
+			parsed.picks = [];
 			for ( i = 0; i < contents.length; i++) {
-				picks.push(contents[i].split(":")[1].trim());
+				parsed.picks.push(contents[i].split(":")[1].trim());
 			}
 
 			console.log( parsed );
