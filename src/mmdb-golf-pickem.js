@@ -2,35 +2,37 @@
 	'use strict';
 	
 	function Entries($http) {
-		var stubbedData = [ {
-			name : 'nick',
-			pick1 : 'jordan spieth',
-			pick2 : 'phil mickelson'
-		}, {
-			name : 'deanne',
-			pick1 : 'adam scott',
-			pick2 : 'bubba watson'
-		} ];
-
 		var liveData = {
-			feed : null
+			entries : []
 		};
+		
+		var parseEntry = function(entry) {
+			var parsed = {};
+			parsed.name = entry.title.$t;
+			parsed.content = entry.content.$t;
+			return parsed;
+		}
+		
 		$http.get( 'https://spreadsheets.google.com/feeds/list/1UKfT41oI1OQ-GKqFNqtRQmIbZ9_h1_4rbprteJYa1EU/default/public/values?alt=json' ).success( function(data) {
-			liveData.feed = data.feed;
+			var i;
+			for (i = 0; i < data.feed.entry.length; i++) {
+				var entry = data.feed.entry[i];
+				console.log(entry);
+				liveData.entries.push(parseEntry(entry));
+			}
 		} );
 
 		return {
-			stubbed : stubbedData,
-			live : liveData
+			entries : liveData.entries
 		};
 	}
 
 	function GolfPickemCtrl(Entries) {
 		var vm = this;
 
-		console.log( Entries.live );
+		console.log( Entries.entries );
 		
-		vm.stubbed = Entries.stubbed;
+		vm.entries = Entries.entries;
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
