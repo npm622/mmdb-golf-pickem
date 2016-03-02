@@ -18,7 +18,6 @@
 				parsed.picks.push(contents[i].split(":")[1].trim());
 			}
 
-			console.log( parsed );
 			return parsed;
 		}
 		
@@ -35,10 +34,10 @@
 			playerCount : function(playerName) {
 				var count = 0;
 				var i;
-				var j;
 				for (i = 0; i < liveData.entries.length; i++) {
 					var entry = liveData.entries[i];
-					for (j = 0; j < entry.picks; j++) {
+					var j;
+					for (j = 0; j < entry.picks.length; j++) {
 						var pick = entry.picks[j];
 						if (pick == playerName) {
 							count++;
