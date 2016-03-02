@@ -63,5 +63,5 @@
 
 	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <pre ng-repeat=\"entry in golfPickem.entries\">{{entry}}</pre>\n    </div>\n</div>");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <pre ng-repeat=\"entry in golfPickem.entries\">{{entry | json}}</pre>\n    </div>\n</div>");}]);
 }());
