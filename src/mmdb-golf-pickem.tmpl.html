@@ -15,13 +15,22 @@
                 </tr>
                 <tr ng-repeat="entry in golfPickem.entries">
                     <th>{{entry.name}}</th>
-                    <td>{{entry.pick1}}</td>
-                    <td>{{entry.pick2}}</td>
-                    <td>{{entry.pick3}}</td>
-                    <td>{{entry.pick4}}</td>
-                    <td>{{entry.pick5}}</td>
+                    <td ng-repeat="pick in entry.picks">{{pick}}</td>
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="row">
+        <div class="col-md-2" ng-repeat="entry in golfPickem.entries">
+            <strong>{{entry.name}}</strong>
+            <div class="list-group">
+                <a href="#" class="list-group-item" ng-repeat="pick in entry.picks">
+                    <h4 class=list-group-item-heading">{{pick}}</h4>
+                    <p class="list-group-item-text">
+                        <em>Selected {{golfPickem.playerSelectionCount(pick)}} time(s).</em>
+                    </p>
+                </a>
+            </div>
+        </div>
     </div>
 </div>

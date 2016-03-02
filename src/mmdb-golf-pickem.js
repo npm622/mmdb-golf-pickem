@@ -13,13 +13,9 @@
 			
 			var contents = entry.content.$t.split(",");
 			var i;
+			var picks = [];
 			for ( i = 0; i < contents.length; i++) {
-				var keyValue = contents[i].split(":");
-				
-				var key = keyValue[0].trim();
-				var value = keyValue[1].trim();
-				
-				parsed[key] = value;
+				picks.push(contents[i].split(":")[1].trim());
 			}
 
 			console.log( parsed );
@@ -35,7 +31,22 @@
 		} );
 
 		return {
-			entries : liveData.entries
+			entries : liveData.entries,
+			playerCount : function(playerName) {
+				var count = 0;
+				var i;
+				var j;
+				for (i = 0; i < liveData.entries.length; i++) {
+					var entry = liveData.entries[i];
+					for (j = 0; j < entry.picks; j++) {
+						var pick = entry.picks[j];
+						if (pick == playerName) {
+							count++;
+						}
+					}
+				}
+				return count;
+			}
 		};
 	}
 
@@ -43,6 +54,10 @@
 		var vm = this;
 
 		vm.entries = Entries.entries;
+		
+		vm.getPlayerSelectionCount = function(playerName) {
+			return Entries.playerCount(playerName);
+		};
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
