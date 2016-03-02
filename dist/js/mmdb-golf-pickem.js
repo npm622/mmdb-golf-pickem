@@ -8,8 +8,22 @@
 		
 		var parseEntry = function(entry) {
 			var parsed = {};
+			
 			parsed.name = entry.title.$t;
-			parsed.content = entry.content.$t;
+			
+			var contents = entry.content.$t.split(",");
+			console.log(contents);
+			var i;
+			for ( i = 0; i < contents.length; i++) {
+				var content = contents[i];
+				var keyValue = content.split(":");
+				
+				var key = keyValue[0];
+				var value = keyValue[1].trim();
+				
+				parsed[key] = value;
+			}
+			
 			return parsed;
 		}
 		
@@ -17,7 +31,6 @@
 			var i;
 			for (i = 0; i < data.feed.entry.length; i++) {
 				var entry = data.feed.entry[i];
-				console.log(entry);
 				liveData.entries.push(parseEntry(entry));
 			}
 		} );
@@ -30,8 +43,6 @@
 	function GolfPickemCtrl(Entries) {
 		var vm = this;
 
-		console.log( Entries.entries );
-		
 		vm.entries = Entries.entries;
 	}
 
