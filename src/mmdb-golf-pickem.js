@@ -89,6 +89,7 @@
 		var vm = this;
 
 		vm.entries = Entries.entries;
+		vm.players = Leaderboard.players;
 
 		vm.getPlayerSelectionCount = function(playerName) {
 			return Entries.entriesByPlayer( playerName ).length;
@@ -99,7 +100,7 @@
 			return rs;
 		}
 		
-		console.log(Leaderboard.players);
+		console.log(vm.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
