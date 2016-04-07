@@ -99,6 +99,14 @@
 			var rs = Entries.entriesByPlayer( playerName );
 			return rs;
 		}
+		
+		vm.displayRoundScore = function(r) {
+			if (r.indexOf('||') > -1) {
+				return '--';
+			} else {
+				return r;
+			}
+		}
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
