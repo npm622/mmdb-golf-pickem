@@ -10,7 +10,7 @@
                         <h4 class=list-group-item-heading">{{pick}}</h4>
                         <!-- <a href="" class="list-group-item-text" title="Common Entries" data-toggle="popover"
                         data-content="{{entry.name}}" data-trigger="hover"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a> -->
-                        <a uib-popover="golfPickem.getEntriesWithPlayer(pick)" popover-title="Common Entries" popover-trigger="focus"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>
+                        <a uib-popover="{{golfPickem.getEntriesWithPlayer(pick)}}" popover-title="Common Entries"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>
                     </li>
                 </ul>
             </div>

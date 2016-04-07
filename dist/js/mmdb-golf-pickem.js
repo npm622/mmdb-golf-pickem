@@ -78,6 +78,7 @@
 			console.log( 'Finding entries that picked ' + playerName );
 			var rs = Entries.entriesByPlayer( playerName );
 			console.log( 'Found ' + rs );
+			return rs;
 		}
 	}
 
@@ -113,5 +114,5 @@
 
 	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <!-- <a href=\"\" class=\"list-group-item-text\" title=\"Common Entries\" data-toggle=\"popover\"\n                        data-content=\"{{entry.name}}\" data-trigger=\"hover\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a> -->\n                        <a uib-popover=\"golfPickem.getEntriesWithPlayer(pick)\" popover-title=\"Common Entries\" popover-trigger=\"focus\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <!-- <a href=\"\" class=\"list-group-item-text\" title=\"Common Entries\" data-toggle=\"popover\"\n                        data-content=\"{{entry.name}}\" data-trigger=\"hover\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a> -->\n                        <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\" popover-title=\"Common Entries\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
 }());

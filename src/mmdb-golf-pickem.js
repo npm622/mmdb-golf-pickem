@@ -78,6 +78,7 @@
 			console.log( 'Finding entries that picked ' + playerName );
 			var rs = Entries.entriesByPlayer( playerName );
 			console.log( 'Found ' + rs );
+			return rs;
 		}
 	}
 
