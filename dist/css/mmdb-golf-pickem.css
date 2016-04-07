@@ -1,4 +1,10 @@
+li > a {
+    cursor: pointer;
+}
 
+a:hover {
+    text-decoration: none;
+}
 
 .spacer {
     margin-top: 15px;
