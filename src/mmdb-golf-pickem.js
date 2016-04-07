@@ -31,21 +31,6 @@
 
 		return {
 			entries : liveData.entries,
-			playerCount : function(playerName) {
-				var count = 0;
-				var i;
-				for ( i = 0; i < liveData.entries.length; i++ ) {
-					var entry = liveData.entries[i];
-					var j;
-					for ( j = 0; j < entry.picks.length; j++ ) {
-						var pick = entry.picks[j];
-						if ( pick == playerName ) {
-							count++;
-						}
-					}
-				}
-				return count;
-			},
 			entriesByPlayer : function(playerName) {
 				var names = [];
 				var i;
@@ -71,7 +56,7 @@
 		vm.entries = Entries.entries;
 
 		vm.getPlayerSelectionCount = function(playerName) {
-			return Entries.playerCount( playerName );
+			return Entries.entriesByPlayer( playerName ).length;
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
