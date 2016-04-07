@@ -2,8 +2,8 @@
 	'use strict';
 	
 	function Leaderboard($http) {
-		var liveData {
-			players : [];
+		var liveData = {
+			players : []
 		}
 
 		var parseEntry = function(entry) {
@@ -11,21 +11,24 @@
 
 			parsed.id = entry.title.$t;
 
-			var keyValues = entry.content.$t.split( "," ).trim();
+			var keyValues = entry.content.$t.split( "," );
 			var i;
 			for ( i = 0; i < keyValues.length; i++ ) {
-				var key = keyValues[i].substring(0, keyValues[i].indexOf(":"));
+				var key = keyValues[i].substring(0, keyValues[i].indexOf(":")).trim();
 				var value = keyValues[i].substring(keyValues[i].indexOf(":") + 1, keyValues[i].length).trim();
-				console.log(key + ' : ' + value);
+				
+				parsed[key] = value;
 			}
 
 			return parsed;
 		}
 		
 		$http.get('https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json').success(function(data){
-			console.log('inside Leaderboard factory...');
-			console.log(data);
-			console.log('...exiting');
+			var i;
+			for ( i = 0; i < data.feed.entry.length; i++ ) {
+				var entry = data.feed.entry[i];
+				liveData.players.push( parseEntry( entry ) );
+			}
 		});
 		
 		return {
