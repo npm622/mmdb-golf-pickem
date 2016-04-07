@@ -99,8 +99,6 @@
 			var rs = Entries.entriesByPlayer( playerName );
 			return rs;
 		}
-		
-		console.log(vm.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )

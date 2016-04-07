@@ -99,8 +99,6 @@
 			var rs = Entries.entriesByPlayer( playerName );
 			return rs;
 		}
-		
-		console.log(vm.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -123,5 +121,5 @@
 
 	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\" popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4> <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\"\n                        popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}}\n                                time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n    <div class=\"row\">\n        <table class=\"table table-striped table-bordered table-hover table-sm\">\n            <thead>\n                <tr>\n                    <th class=\"col-md-1\">id</th>\n                    <th class=\"col-md-1\">first</th>\n                    <th class=\"col-md-1\">last</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr ng-repeat=\"player in golfPickem.players\">\n                    <td>{{player.id}}</td>\n                    <td>{{player.firstName}}</td>\n                    <td>{{player.lastName}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n\n\n");}]);
 }());
