@@ -103,6 +103,8 @@
 		vm.displayRoundScore = function(r) {
 			if (r.indexOf('||') > -1) {
 				return '--';
+			} else if (r.startsWith('|')) {
+				return r.substring(1,3);
 			} else {
 				return r;
 			}
