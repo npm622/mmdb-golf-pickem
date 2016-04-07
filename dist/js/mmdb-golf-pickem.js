@@ -1,22 +1,6 @@
 (function() {
 	'use strict';
 
-	function Leaderboard($http) {
-		var liveData = {
-			currentRound : "",
-			cutLine : "",
-			players : []
-		};
-// https://docs.google.com/spreadsheets/d/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/edit?usp=sharing
-		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/od6/public/values?alt=json' ).success( function(data) {
-			console.log( data );
-		} );
-		
-		return {
-			players : liveData.players
-		}
-	}
-
 	function Entries($http) {
 		var liveData = {
 			entries : []
@@ -65,7 +49,7 @@
 		};
 	}
 
-	function GolfPickemCtrl(Entries, Leaderboard) {
+	function GolfPickemCtrl(Entries) {
 		console.log('hello');
 		var vm = this;
 
@@ -74,9 +58,6 @@
 		vm.getPlayerSelectionCount = function(playerName) {
 			return Entries.playerCount( playerName );
 		};
-		
-		vm.players = Leaderboard.players
-		console.log(vm.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
@@ -95,9 +76,7 @@
 
 	.factory( 'Entries', [ '$http', Entries ] )
 
-	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
+	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
-
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <div class=\"col-md-4\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-brand\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a href=\"#\" class=\"list-group-item-text\">\n                            <em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em>\n                        </a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-brand\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a href=\"#\" class=\"list-group-item-text\">\n                            <em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em>\n                        </a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>");}]);
 }());
