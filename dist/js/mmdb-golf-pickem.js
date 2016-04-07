@@ -7,8 +7,8 @@
 			cutLine : "",
 			players : []
 		};
-
-		$http.get( 'http://www.masters.com/en_US/scores/feeds/scores.json' ).success( function(data) {
+// https://docs.google.com/spreadsheets/d/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/edit?usp=sharing
+		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json' ).success( function(data) {
 			console.log( data );
 		} );
 	}
