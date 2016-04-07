@@ -1,31 +1,43 @@
 (function() {
 	'use strict';
-	
+
+	function Leaderboard($http) {
+		var liveData = {
+			currentRound : "",
+			cutLine : "",
+			players : []
+		};
+
+		$http.get( 'http://www.masters.com/en_US/scores/feeds/scores.json' ).success( function(data) {
+			console.log( data );
+		} );
+	}
+
 	function Entries($http) {
 		var liveData = {
 			entries : []
 		};
-		
+
 		var parseEntry = function(entry) {
 			var parsed = {};
-			
+
 			parsed.name = entry.title.$t;
-			
-			var contents = entry.content.$t.split(",");
+
+			var contents = entry.content.$t.split( "," );
 			var i;
 			parsed.picks = [];
-			for ( i = 0; i < contents.length; i++) {
-				parsed.picks.push(contents[i].split(":")[1].trim());
+			for ( i = 0; i < contents.length; i++ ) {
+				parsed.picks.push( contents[i].split( ":" )[1].trim() );
 			}
 
 			return parsed;
 		}
-		
+
 		$http.get( 'https://spreadsheets.google.com/feeds/list/1UKfT41oI1OQ-GKqFNqtRQmIbZ9_h1_4rbprteJYa1EU/default/public/values?alt=json' ).success( function(data) {
 			var i;
-			for (i = 0; i < data.feed.entry.length; i++) {
+			for ( i = 0; i < data.feed.entry.length; i++ ) {
 				var entry = data.feed.entry[i];
-				liveData.entries.push(parseEntry(entry));
+				liveData.entries.push( parseEntry( entry ) );
 			}
 		} );
 
@@ -34,12 +46,12 @@
 			playerCount : function(playerName) {
 				var count = 0;
 				var i;
-				for (i = 0; i < liveData.entries.length; i++) {
+				for ( i = 0; i < liveData.entries.length; i++ ) {
 					var entry = liveData.entries[i];
 					var j;
-					for (j = 0; j < entry.picks.length; j++) {
+					for ( j = 0; j < entry.picks.length; j++ ) {
 						var pick = entry.picks[j];
-						if (pick == playerName) {
+						if ( pick == playerName ) {
 							count++;
 						}
 					}
@@ -53,9 +65,9 @@
 		var vm = this;
 
 		vm.entries = Entries.entries;
-		
+
 		vm.getPlayerSelectionCount = function(playerName) {
-			return Entries.playerCount(playerName);
+			return Entries.playerCount( playerName );
 		};
 	}
 
@@ -75,7 +87,9 @@
 
 	.factory( 'Entries', [ '$http', Entries ] )
 
+	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
+
 	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <div class=\"col-md-4\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-default\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a href=\"#\" class=\"list-group-item-text\">\n                            <em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em>\n                        </a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <p>This is the Masters Pick \'Em Page</p>\n    </div>\n    <div class=\"row\">\n        <div class=\"col-md-4\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-brand\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a href=\"#\" class=\"list-group-item-text\">\n                            <em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em>\n                        </a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>");}]);
 }());
