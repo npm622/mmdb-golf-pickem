@@ -1,5 +1,17 @@
 (function() {
 	'use strict';
+	
+	function Leaderboard($http) {
+		$http.get('https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json').success(function(data){
+			console.log('inside Leaderboard factory...');
+			console.log(data);
+			console.log('...exiting');
+		});
+		
+		return {
+			players: ['dummy', 'data']
+		}
+	}
 
 	function Entries($http) {
 		var liveData = {
@@ -49,7 +61,7 @@
 		};
 	}
 
-	function GolfPickemCtrl(Entries) {
+	function GolfPickemCtrl(Entries, Leaderboard) {
 		console.log( 'hello' );
 		var vm = this;
 
@@ -65,6 +77,8 @@
 			console.log( 'Found ' + rs );
 			return rs;
 		}
+		
+		console.log(Leaderboard.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -83,7 +97,9 @@
 
 	.factory( 'Entries', [ '$http', Entries ] )
 
-	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
+	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
+
+	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
 
 	 @@templateCache
 }());

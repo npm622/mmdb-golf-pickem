@@ -1,5 +1,17 @@
 (function() {
 	'use strict';
+	
+	function Leaderboard($http) {
+		$http.get('https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json').success(function(data){
+			console.log('inside Leaderboard factory...');
+			console.log(data);
+			console.log('...exiting');
+		});
+		
+		return {
+			players: ['dummy', 'data']
+		}
+	}
 
 	function Entries($http) {
 		var liveData = {
@@ -49,7 +61,7 @@
 		};
 	}
 
-	function GolfPickemCtrl(Entries) {
+	function GolfPickemCtrl(Entries, Leaderboard) {
 		console.log( 'hello' );
 		var vm = this;
 
@@ -65,6 +77,8 @@
 			console.log( 'Found ' + rs );
 			return rs;
 		}
+		
+		console.log(Leaderboard.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -83,7 +97,9 @@
 
 	.factory( 'Entries', [ '$http', Entries ] )
 
-	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
+	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
+
+	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
 
 	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\" popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
 }());
