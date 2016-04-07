@@ -45,12 +45,26 @@
 					}
 				}
 				return count;
+			},
+			entriesByPlayer : function(playerName) {
+				var names = [];
+				var i;
+				for ( i = 0; i < liveData.entries.length; i++ ) {
+					var entry = liveData.entries[i];
+					var j;
+					for ( j = 0; j < entry.picks.length; j++ ) {
+						if ( pick == playerName ) {
+							names.push( entry.name );
+						}
+					}
+				}
+				return names;
 			}
 		};
 	}
 
 	function GolfPickemCtrl(Entries) {
-		console.log('hello');
+		console.log( 'hello' );
 		var vm = this;
 
 		vm.entries = Entries.entries;
@@ -58,6 +72,11 @@
 		vm.getPlayerSelectionCount = function(playerName) {
 			return Entries.playerCount( playerName );
 		};
+
+		vm.getEntriesWithPlayer = function(playerName) {
+			console.log( 'Finding entries that picked ' + playerName );
+			console.log( 'Found ' + Entries.entriesByPlayer( playerName ) );
+		}
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
