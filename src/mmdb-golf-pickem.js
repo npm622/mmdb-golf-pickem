@@ -2,6 +2,26 @@
 	'use strict';
 	
 	function Leaderboard($http) {
+		var liveData {
+			players : [];
+		}
+
+		var parseEntry = function(entry) {
+			var parsed = {};
+
+			parsed.id = entry.title.$t;
+
+			var keyValues = entry.content.$t.split( "," ).trim();
+			var i;
+			for ( i = 0; i < keyValues.length; i++ ) {
+				var key = keyValues[i].substring(0, keyValues[i].indexOf(":"));
+				var value = keyValues[i].substring(keyValues[i].indexOf(":") + 1, keyValues[i].length).trim();
+				console.log(key + ' : ' + value);
+			}
+
+			return parsed;
+		}
+		
 		$http.get('https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json').success(function(data){
 			console.log('inside Leaderboard factory...');
 			console.log(data);
@@ -9,7 +29,7 @@
 		});
 		
 		return {
-			players: ['dummy', 'data']
+			players: liveData.players
 		}
 	}
 
@@ -72,9 +92,7 @@
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
-			console.log( 'Finding entries that picked ' + playerName );
 			var rs = Entries.entriesByPlayer( playerName );
-			console.log( 'Found ' + rs );
 			return rs;
 		}
 		
