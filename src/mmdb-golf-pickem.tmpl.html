@@ -1,19 +1,22 @@
 <div class="container">
     <div class="row spacer">
         <div class="col-md-3" ng-repeat="entry in golfPickem.entries">
-            <div class="panel panel-brand">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 class="panel-title">{{entry.name}}</h3>
                 </div>
                 <ul class="list-group" ng-repeat="pick in entry.picks">
                     <li class="list-group-item">
-                        <h4 class=list-group-item-heading">{{pick}}</h4>
-                        <a ng-click="golfPickem.getEntriesWithPlayer(pick)" class="list-group-item-text">
-                            <em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em>
-                        </a>
+                        <h4 class=list-group-item-heading">{{pick}}</h4> <a href="" class="list-group-item-text" title="Common Entries" data-toggle="popover"
+                        data-content="names go here" data-trigger="hover"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="col-md-6">
+    <a href="" title="Wow. Looky Here." data-toggle="popover" data-content="More stuff here.." data-trigger="hover">I have a Popover</a>
 </div>
