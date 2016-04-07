@@ -82,7 +82,7 @@
 		}
 	}
 
-	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
+	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
 
 	.config( function config($stateProvider) {
 		$stateProvider.state( 'golfPickem', {
