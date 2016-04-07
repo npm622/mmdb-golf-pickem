@@ -4,6 +4,7 @@ li > a {
 
 a:hover {
     text-decoration: none;
+    opacity: .8;
 }
 
 .spacer {
