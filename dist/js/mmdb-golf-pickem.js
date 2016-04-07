@@ -80,24 +80,10 @@
 			}
 		} );
 	} )
-	
-	.directive('toggle', function(){
-		  return {
-		    restrict: 'A',
-		    link: function(scope, element, attrs){
-		      if (attrs.toggle=="tooltip"){
-		        $(element).tooltip();
-		      }
-		      if (attrs.toggle=="popover"){
-		        $(element).popover();
-		      }
-		    }
-		  };
-		})
 
 	.factory( 'Entries', [ '$http', Entries ] )
 
 	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
 
-	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\" popover-title=\"Common Entries\" popover-trigger=\"focus\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
+	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in golfPickem.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4>\n                        <a uib-popover=\"{{golfPickem.getEntriesWithPlayer(pick)}}\" popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}} time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");}]);
 }());
