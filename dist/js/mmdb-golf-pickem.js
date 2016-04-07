@@ -11,6 +11,10 @@
 		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/od6/public/values?alt=json' ).success( function(data) {
 			console.log( data );
 		} );
+		
+		return {
+			players : liveData.players
+		}
 	}
 
 	function Entries($http) {
