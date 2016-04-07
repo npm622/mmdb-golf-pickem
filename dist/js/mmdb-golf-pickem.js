@@ -53,6 +53,7 @@
 					var entry = liveData.entries[i];
 					var j;
 					for ( j = 0; j < entry.picks.length; j++ ) {
+						var pick = entry.picks[j];
 						if ( pick == playerName ) {
 							names.push( entry.name );
 						}
@@ -75,7 +76,9 @@
 
 		vm.getEntriesWithPlayer = function(playerName) {
 			console.log( 'Finding entries that picked ' + playerName );
-			console.log( 'Found ' + Entries.entriesByPlayer( playerName ) );
+			var rs = Entries.entriesByPlayer( playerName );
+			console.log( 'Found ' + rs );
+			alert(rs);
 		}
 	}
 
