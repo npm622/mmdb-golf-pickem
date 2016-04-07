@@ -8,7 +8,7 @@
 			players : []
 		};
 // https://docs.google.com/spreadsheets/d/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/edit?usp=sharing
-		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json' ).success( function(data) {
+		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/od6/public/values?alt=json' ).success( function(data) {
 			console.log( data );
 		} );
 	}
@@ -61,7 +61,8 @@
 		};
 	}
 
-	function GolfPickemCtrl(Entries) {
+	function GolfPickemCtrl(Entries, Leaderboard) {
+		console.log('hello');
 		var vm = this;
 
 		vm.entries = Entries.entries;
@@ -69,6 +70,9 @@
 		vm.getPlayerSelectionCount = function(playerName) {
 			return Entries.playerCount( playerName );
 		};
+		
+		vm.players = Leaderboard.players
+		console.log(vm.players);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router' ] )
@@ -89,7 +93,7 @@
 
 	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
 
-	.controller( 'GolfPickemCtrl', [ 'Entries', GolfPickemCtrl ] );
+	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
 
 	 @@templateCache
 }());
