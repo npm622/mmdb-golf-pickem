@@ -83,40 +83,27 @@
 	function GolfPickemCtrl(GoogleSheetsScraper) {
 		var vm = this;
 		
+		// data
 		vm.entries = GoogleSheetsScraper.entries;
 		vm.players = GoogleSheetsScraper.players;
 
+		// view logic
 		vm.ENTRIES = 'entries';
 		vm.SCOREBOARD = 'scoreboard';
 
 		vm.display = vm.SCOREBOARD;
 
-		vm.toggleDisplay = function() {
-			switch ( vm.display ) {
-			case vm.ENTRIES:
-				vm.setDisplay( vm.SCOREBOARD );
-				break;
-			case vm.SCOREBOARD:
-				vm.setDisplay( vm.ENTRIES );
-				break;
-			default:
-				alert( 'the simple #toggleDisplay() function is not sufficient anymore -- ' + vm.display );
-				break;
-			}
-		}
-
-		vm.setDisplay = function(newDisplay) {
-			vm.display = newDisplay;
+		vm.isDisplayActive = function(displayInQuestion) {
+			return vm.display === displayInQuestion;
 		}
 	}
 
 	function PickemEntriesCtrl() {
 		var vm = this;
 
+		// view logic
 		vm.BY_ENTRANT = "by_entrant";
 		vm.BY_PLAYER = "by_player";
-
-		vm.entries = Entries.entries;
 
 		vm.display = vm.BY_ENTRANT;
 
@@ -143,11 +130,11 @@
 		var vm = this;
 
 		vm.getPlayerSelectionCount = function(playerName) {
-			return EntriesByEntrant.entriesByPlayer( playerName, entries ).length;
+			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries ).length;
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
-			return EntriesByEntrant.entriesByPlayer( playerName, entries );
+			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
 		}
 	}
 

@@ -5,10 +5,10 @@
                 class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_PLAYER">by player</label>
         </div>
     </div>
-    <div class="row spacer" ng-show="pickemEntries.display === pickemEntries.BY_ENTRANT">
+    <div class="row spacer" ng-show="pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)">
         <entries-by-entrant entries="pickemEntries.entries"></entries-by-entrant>
     </div>
-    <div class="row spacer" ng-show="pickemEntries.display === pickemEntries.BY_PLAYER">
+    <div class="row spacer" ng-show="pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)">
         <p>TODO: figure out this view</p>
     </div>
 </div>

@@ -9,10 +9,10 @@
             </div>
         </div>
         <div class="col-md-10">
-            <div ng-show="golfPickem.display === golfPickem.ENTRIES">
+            <div ng-show="golfPickem.isDisplayActive(golfPickem.ENTRIES)">
                 <pickem-entries entries="golfPickem.entries"></pickem-entries>
             </div>
-            <div ng-show="golfPickem.display === golfPickem.SCOREBOARD">
+            <div ng-show="golfPickem.isDisplayActive(golfPickem.SCOREBOARD)">
                 <scoreboard players="golfPickem.players"></scoreboard>
             </div>
         </div>
