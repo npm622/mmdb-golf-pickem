@@ -1,12 +1,31 @@
 (function() {
 	'use strict';
 
-	function Leaderboard($http) {
-		var liveData = {
+	function GoogleSheetsScraper($http) {
+		var data = {
+			entries : [],
 			players : []
+		};
+
+		var leaderboardUrl = 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json';
+		var entriesUrl = 'https://spreadsheets.google.com/feeds/list/1UKfT41oI1OQ-GKqFNqtRQmIbZ9_h1_4rbprteJYa1EU/default/public/values?alt=json';
+
+		var parseEntriesEntry = function(entry) {
+			var parsed = {};
+
+			parsed.name = entry.title.$t;
+
+			var contents = entry.content.$t.split( "," );
+			var i;
+			parsed.picks = [];
+			for ( i = 0; i < contents.length; i++ ) {
+				parsed.picks.push( contents[i].split( ":" )[1].trim() );
+			}
+
+			return parsed;
 		}
 
-		var parseEntry = function(entry) {
+		var parseLeaderboardEntry = function(entry) {
 			var parsed = {};
 
 			parsed.id = entry.title.$t;
@@ -23,54 +42,38 @@
 			return parsed;
 		}
 
-		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json' ).success( function(data) {
-			var i;
-			for ( i = 0; i < data.feed.entry.length; i++ ) {
-				var entry = data.feed.entry[i];
-				liveData.players.push( parseEntry( entry ) );
+		$http.get( entriesUrl ).success( function(data) {
+			for ( var i = 0; i < data.feed.entry.length; i++ ) {
+				data.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
+			}
+		} );
+
+		$http.get( leaderboardUrl ).success( function(data) {
+			for ( var i = 0; i < data.feed.entry.length; i++ ) {
+				data.players.push( parseLeaderboardEntry( data.feed.entry[i] ) );
 			}
 		} );
 
 		return {
-			players : liveData.players
+			entries : data.entries,
+			players : data.players
 		}
 	}
 
-	function Entries($http) {
-		var liveData = {
-			entries : []
-		};
-
-		var parseEntry = function(entry) {
-			var parsed = {};
-
-			parsed.name = entry.title.$t;
-
-			var contents = entry.content.$t.split( "," );
-			var i;
-			parsed.picks = [];
-			for ( i = 0; i < contents.length; i++ ) {
-				parsed.picks.push( contents[i].split( ":" )[1].trim() );
-			}
-
-			return parsed;
-		}
-
-		$http.get( 'https://spreadsheets.google.com/feeds/list/1UKfT41oI1OQ-GKqFNqtRQmIbZ9_h1_4rbprteJYa1EU/default/public/values?alt=json' ).success( function(data) {
-			var i;
-			for ( i = 0; i < data.feed.entry.length; i++ ) {
-				var entry = data.feed.entry[i];
-				liveData.entries.push( parseEntry( entry ) );
-			}
-		} );
-
+	function Leaderboard(GoogleSheetsScraper) {
 		return {
-			entries : liveData.entries,
+			players : GoogleSheetsScraper.players
+		}
+	}
+
+	function Entries(GoogleSheetsScraper) {
+		return {
+			entries : GoogleSheetsScraper.entries,
 			entriesByPlayer : function(playerName) {
 				var names = [];
 				var i;
-				for ( i = 0; i < liveData.entries.length; i++ ) {
-					var entry = liveData.entries[i];
+				for ( i = 0; i < GoogleSheetsScraper.entries.length; i++ ) {
+					var entry = GoogleSheetsScraper.entries[i];
 					var j;
 					for ( j = 0; j < entry.picks.length; j++ ) {
 						var pick = entry.picks[j];
@@ -113,14 +116,14 @@
 
 	function PickemEntriesCtrl(Entries) {
 		var vm = this;
-		
+
 		vm.BY_ENTRANT = "by_entrant";
 		vm.BY_PLAYER = "by_player";
 
 		vm.entries = Entries.entries;
-		
+
 		vm.display = vm.BY_ENTRANT;
-		
+
 		vm.isDisplayActive = function(displayInQuestion) {
 			return vm.display === displayInQuestion;
 		}
@@ -141,7 +144,7 @@
 			}
 		}
 	}
-	
+
 	function EntriesByEntrantCtrl(Entries) {
 		var vm = this;
 
@@ -176,9 +179,11 @@
 		} );
 	} )
 
-	.factory( 'Entries', [ '$http', Entries ] )
+	.factory( 'GoogleSheetsScraper', [ '$http', Entries ] )
 
-	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
+	.factory( 'Entries', [ 'GoogleSheetsScraper', Entries ] )
+
+	.factory( 'Leaderboard', [ 'GoogleSheetsScraper', Leaderboard ] )
 
 	.controller( 'GolfPickemCtrl', [ GolfPickemCtrl ] )
 
@@ -223,5 +228,5 @@
 		}
 	} );
 
-	 @@templateCache
+	// @@templateCache
 }());
