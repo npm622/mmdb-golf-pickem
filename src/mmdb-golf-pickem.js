@@ -87,7 +87,7 @@
 		};
 	}
 
-	function GolfPickemCtrl(Leaderboard) {
+	function GolfPickemCtrl() {
 		var vm = this;
 
 		vm.ENTRIES = 'entries';
@@ -228,5 +228,5 @@
 		}
 	} );
 
-	// @@templateCache
+	 @@templateCache
 }());
