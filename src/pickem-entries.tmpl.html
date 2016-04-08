@@ -4,23 +4,9 @@
             <label class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_ENTRANT">by entrant</label> <label
                 class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_PLAYER">by player</label>
         </div>
-        <pre>{{pickemEntries.display}}</pre>
     </div>
     <div class="row spacer" ng-show="pickemEntries.display === pickemEntries.BY_ENTRANT">
-        <div class="col-md-3" ng-repeat="entry in pickemEntries.entries">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{entry.name}}</h3>
-                </div>
-                <ul class="list-group" ng-repeat="pick in entry.picks">
-                    <li class="list-group-item">
-                        <h4 class=list-group-item-heading">{{pick}}</h4> <a uib-popover="{{pickemEntries.getEntriesWithPlayer(pick)}}"
-                        popover-title="Common Entries" popover-trigger="outsideClick"><em>Selected {{pickemEntries.getPlayerSelectionCount(pick)}}
-                                time(s).</em></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <entries-by-entrant entries="pickemEntries.entries"></entries-by-entrant>
     </div>
     <div class="row spacer" ng-show="pickemEntries.display === pickemEntries.BY_PLAYER">
         <p>TODO: figure out this view</p>

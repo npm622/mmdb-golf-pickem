@@ -118,14 +118,6 @@
 		vm.BY_PLAYER = "by_player";
 
 		vm.entries = Entries.entries;
-
-		vm.getPlayerSelectionCount = function(playerName) {
-			return Entries.entriesByPlayer( playerName ).length;
-		};
-
-		vm.getEntriesWithPlayer = function(playerName) {
-			return Entries.entriesByPlayer( playerName );
-		}
 		
 		vm.display = vm.BY_ENTRANT;
 		
@@ -147,6 +139,18 @@
 			} else {
 				return r;
 			}
+		}
+	}
+	
+	function EntriesByEntrantCtrl(Entries) {
+		var vm = this;
+
+		vm.getPlayerSelectionCount = function(playerName) {
+			return Entries.entriesByPlayer( playerName ).length;
+		};
+
+		vm.getEntriesWithPlayer = function(playerName) {
+			return Entries.entriesByPlayer( playerName );
 		}
 	}
 
@@ -182,6 +186,8 @@
 
 	.controller( 'ScoreboardCtrl', [ 'Leaderboard', ScoreboardCtrl ] )
 
+	.controller( 'EntriesByEntrantCtrl', [ 'Entries', EntriesByEntrantCtrl ] )
+
 	.directive( 'pickemEntries', function() {
 		return {
 			restrict : 'E',
@@ -200,6 +206,19 @@
 			scope : {},
 			controller : 'ScoreboardCtrl',
 			controllerAs : 'scoreboard',
+			bindToController : true
+		}
+	} )
+
+	.directive( 'entriesByEntrant', function() {
+		return {
+			restrict : 'E',
+			templateUrl : 'entries-by-entrant.tmpl.html',
+			scope : {
+				entries : '='
+			},
+			controller : 'EntriesByEntrantCtrl',
+			controllerAs : 'entriesByEntrant',
 			bindToController : true
 		}
 	} );
