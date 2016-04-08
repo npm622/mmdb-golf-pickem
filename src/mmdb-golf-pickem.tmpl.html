@@ -7,7 +7,9 @@
             </div>
         </div>
         <div class="col-md-10">
-            <pickem-entries ng-show="golfPickem.display === golfPickem.ENTRIES"></pickem-entries>
+            <div ng-show="golfPickem.display === golfPickem.ENTRIES">
+                <pickem-entries></pickem-entries>
+            </div>
             <div ng-show="golfPickem.display === golfPickem.SCOREBOARD">
                 <scoreboard></scoreboard>
             </div>
