@@ -196,5 +196,5 @@
 		}
 	} );
 
-	// @@templateCache
+	 @@templateCache
 }());
