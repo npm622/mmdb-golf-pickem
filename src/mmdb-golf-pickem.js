@@ -81,8 +81,38 @@
 	}
 	
 	function EntriesByPlayer() {
+		var playerDetails = function(entries) {
+			var uniquePlayers = [];
+			for (var i = 0; i < entries.length; i++) {
+				var entry = entries[i];
+				
+				for (var j = 0; j < entry.picks.length; j++) {
+					var foundMatch = false;
+					for (var k = 0; k < uniquePlayers.length; k++) {
+						if (entry.picks[j] === uniquePlayers[k].name) {
+							uniquePlayers[k].pickedBy.push(entry.name);
+							foundMatch = true;
+						}
+					}
+					
+					if (!foundMatch) {
+						var player = {};
+						player.name = entry.picks[j];
+						player.pickedBy = [];
+						player.pickedBy.push(entry.name);
+						
+						uniquePlayers.push(player);
+					}
+				}
+			}
+			
+			return uniquePlayers;
+		}
+	
 		return {
-			tableRows = [];
+			collectPlayerDetails : function(entries) {
+				return playerDetails(entries);
+			}
 		}
 	}
 
@@ -147,7 +177,7 @@
 	function EntriesByPlayerCtrl(EntriesByPlayer) {
 		var vm = this;
 		
-		vm.rows = EntriesByPlayer.tableRows;
+		vm.playerDetails = EntriesByPlayer.collectPlayerDetails(vm.entries);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -193,8 +223,7 @@
 			restrict : 'E',
 			templateUrl : 'pickem-entries.tmpl.html',
 			scope : {
-				entries : '=',
-				players : '='
+				entries : '='
 			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
@@ -233,8 +262,7 @@
 			restrict : 'E',
 			templateUrl : 'entries-by-player.tmpl.html',
 			scope : {
-				entries : '=',
-				players : '='
+				entries : '='
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',
