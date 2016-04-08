@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
-	
+
 	function Leaderboard($http) {
 		var liveData = {
 			players : []
@@ -14,25 +14,25 @@
 			var keyValues = entry.content.$t.split( "," );
 			var i;
 			for ( i = 0; i < keyValues.length; i++ ) {
-				var key = keyValues[i].substring(0, keyValues[i].indexOf(":")).trim();
-				var value = keyValues[i].substring(keyValues[i].indexOf(":") + 1, keyValues[i].length).trim();
-				
+				var key = keyValues[i].substring( 0, keyValues[i].indexOf( ":" ) ).trim();
+				var value = keyValues[i].substring( keyValues[i].indexOf( ":" ) + 1, keyValues[i].length ).trim();
+
 				parsed[key] = value;
 			}
 
 			return parsed;
 		}
-		
-		$http.get('https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json').success(function(data){
+
+		$http.get( 'https://spreadsheets.google.com/feeds/list/1QqKSLJoBIGEl75l8xgHRZScYRWuZNtiYwGHlKF3qC1w/default/public/values?alt=json' ).success( function(data) {
 			var i;
 			for ( i = 0; i < data.feed.entry.length; i++ ) {
 				var entry = data.feed.entry[i];
 				liveData.players.push( parseEntry( entry ) );
 			}
-		});
-		
+		} );
+
 		return {
-			players: liveData.players
+			players : liveData.players
 		}
 	}
 
@@ -84,27 +84,58 @@
 		};
 	}
 
-	function GolfPickemCtrl(Entries, Leaderboard) {
-		console.log( 'hello' );
+	function GolfPickemCtrl(Leaderboard) {
+		var vm = this;
+
+		vm.ENTRIES = 'entries';
+		vm.SCOREBOARD = 'scoreboard';
+
+		// scoreboard, entries, ...
+		vm.display = vm.SCOREBOARD;
+
+		vm.toggleDisplay = function() {
+			switch ( vm.display ) {
+			case vm.ENTRIES:
+				vm.setDisplay( vm.SCOREBOARD );
+				break;
+			case vm.SCOREBOARD:
+				vm.setDisplay( vm.ENTRIES );
+				break;
+			default:
+				alert( 'the simple #toggleDisplay() function is not sufficient anymore -- ' + vm.display );
+				break;
+			}
+		}
+
+		vm.setDisplay = function(newDisplay) {
+			vm.display = newDisplay;
+		}
+	}
+
+	function PickemEntriesCtrl(Entries) {
 		var vm = this;
 
 		vm.entries = Entries.entries;
-		vm.players = Leaderboard.players;
 
 		vm.getPlayerSelectionCount = function(playerName) {
 			return Entries.entriesByPlayer( playerName ).length;
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
-			var rs = Entries.entriesByPlayer( playerName );
-			return rs;
+			return Entries.entriesByPlayer( playerName );
 		}
-		
+	}
+
+	function ScoreboardCtrl(Leaderboard) {
+		var vm = this;
+
+		vm.players = Leaderboard.players;
+
 		vm.displayRoundScore = function(r) {
-			if (r.indexOf('||') > -1) {
+			if ( r.indexOf( '||' ) > -1 ) {
 				return '--';
-			} else if (r.startsWith('|')) {
-				return r.substring(1,3);
+			} else if ( r.startsWith( '|' ) ) {
+				return r.substring( 1, 3 );
 			} else {
 				return r;
 			}
@@ -112,6 +143,14 @@
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
+
+	.provider( 'golfPickemConfig', function(/* INPUT */) {
+		// this.input = INPUT;
+
+		this.$get = function() {
+			return this;
+		}
+	} )
 
 	.config( function config($stateProvider) {
 		$stateProvider.state( 'golfPickem', {
@@ -129,7 +168,33 @@
 
 	.factory( 'Leaderboard', [ '$http', Leaderboard ] )
 
-	.controller( 'GolfPickemCtrl', [ 'Entries', 'Leaderboard', GolfPickemCtrl ] );
+	.controller( 'GolfPickemCtrl', [ GolfPickemCtrl ] )
 
-	 @@templateCache
+	.controller( 'PickemEntriesCtrl', [ 'Entries', PickemEntriesCtrl ] )
+
+	.controller( 'ScoreboardCtrl', [ 'Entries', ScoreboardCtrlCtrl ] )
+
+	.directive( 'pickemEntries', function() {
+		return {
+			restrict : 'E',
+			templateUrl : 'pickem-entries.tmpl.html',
+			scope : {},
+			controller : 'PickemEntriesCtrl',
+			controllerAs : 'pickemEntries',
+			bindToController : true
+		}
+	} )
+
+	.directive( 'scoreboardEntries', function() {
+		return {
+			restrict : 'E',
+			templateUrl : 'scoreboard.tmpl.html',
+			scope : {},
+			controller : 'ScoreboardCtrl',
+			controllerAs : 'scoreboard',
+			bindToController : true
+		}
+	} );
+
+	// @@templateCache
 }());

@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row spacer">
+        <div class="col-md-3" ng-repeat="entry in golfPickem.entries">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{entry.name}}</h3>
+                </div>
+                <ul class="list-group" ng-repeat="pick in entry.picks">
+                    <li class="list-group-item">
+                        <h4 class=list-group-item-heading">{{pick}}</h4> <a uib-popover="{{golfPickem.getEntriesWithPlayer(pick)}}"
+                        popover-title="Common Entries" popover-trigger="outsideClick"><em>Selected {{golfPickem.getPlayerSelectionCount(pick)}}
+                                time(s).</em></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+

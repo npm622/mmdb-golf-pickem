@@ -1,0 +1,31 @@
+
+<table class="table table-striped table-bordered table-hover table-sm">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>pos</th>
+            <th>player</th>
+            <th>today</th>
+            <th>thru</th>
+            <th>to par</th>
+            <th>r1</th>
+            <th>r2</th>
+            <th>r3</th>
+            <th>r4</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="player in scoreboard.players">
+            <td>{{player.id}}</td>
+            <td>{{player.pos}}</td>
+            <td>{{player.firstname}} {{player.lastname}} ({{player.country}})</td>
+            <td>{{player.today}}</td>
+            <td>{{player.thru}}</td>
+            <td>{{player.topar}}</td>
+            <td>{{scoreboard.displayRoundScore(player.r1)}}</td>
+            <td>{{scoreboard.displayRoundScore(player.r2)}}</td>
+            <td>{{scoreboard.displayRoundScore(player.r3)}}</td>
+            <td>{{scoreboard.displayRoundScore(player.r4)}}</td>
+        </tr>
+    </tbody>
+</table>
