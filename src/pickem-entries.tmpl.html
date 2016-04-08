@@ -1,10 +1,8 @@
 <div class="container">
     <div class="row">
-        <div class="btn-group" role="group" data-toggle="buttons">
-            <label class="btn btn-primary" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)}"><input type="radio"
-                name="displays" id="{{pickemEntries.BY_ENTRANT}}" ng-model="pickemEntries.display" value="{{pickemEntries.BY_ENTRANT}}" checked>by entrant</label>
-            <label class="btn btn-primary" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)}"><input type="radio"
-                name="displays" id="{{pickemEntries.BY_PLAYER}}" ng-model="pickemEntries.display" value="{{pickemEntries.BY_PLAYER}}">by player</label>
+        <div class="btn-group" role="group">
+            <label class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_ENTRANT">by entrant</label> <label
+                class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_PLAYER">by player</label>
         </div>
         <pre>{{pickemEntries.display}}</pre>
     </div>
