@@ -172,7 +172,7 @@
 
 	.controller( 'PickemEntriesCtrl', [ 'Entries', PickemEntriesCtrl ] )
 
-	.controller( 'ScoreboardCtrl', [ 'Entries', ScoreboardCtrlCtrl ] )
+	.controller( 'ScoreboardCtrl', [ 'Entries', ScoreboardCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
