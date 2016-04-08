@@ -1,12 +1,12 @@
 <div class="container">
     <div class="row">
         <div class="btn-group" role="group" data-toggle="buttons">
-            <label class="btn btn-primary" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)}"><input
-                type="radio" name="displays" id="{{pickemEntries.BY_ENTRANT}}" ng-model="pickemEntries.display" ng-value="pickemEntries.BY_ENTRANT" checked>by entrant</label>
-            <label class="btn btn-primary"
-                ng-model="pickemEntries.display" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)}"><input type="radio"
-                name="displays" id="by_player" ng-model="pickemEntries.display" ng-value="pickemEntries.BY_PLAYER">by player</label>
+            <label class="btn btn-primary" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)}"><input type="radio"
+                name="displays" id="{{pickemEntries.BY_ENTRANT}}" ng-model="pickemEntries.display" value="{{pickemEntries.BY_ENTRANT}}" checked>by entrant</label>
+            <label class="btn btn-primary" ng-class="{active: pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)}"><input type="radio"
+                name="displays" id="{{pickemEntries.BY_PLAYER}}" ng-model="pickemEntries.display" value="{{pickemEntries.BY_PLAYER}}">by player</label>
         </div>
+        <pre>{{pickemEntries.display}}</pre>
     </div>
     <div class="row spacer" ng-show="pickemEntries.display === pickemEntries.BY_ENTRANT">
         <div class="col-md-3" ng-repeat="entry in pickemEntries.entries">
