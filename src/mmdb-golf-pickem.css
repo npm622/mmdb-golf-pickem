@@ -11,10 +11,7 @@ a:hover {
     margin-top: 30px;
 }
 
-.sidebar-btn {
-    margin: 4px;
-}
-
-.sidebar-btn-grp {
-    padding: 6px;
+.btn-group-vertical > label{
+    margin-bottom:16px;
+    border-radius:8px !important;
 }
