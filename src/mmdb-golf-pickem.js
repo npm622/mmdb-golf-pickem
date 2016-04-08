@@ -129,7 +129,7 @@
 		
 		vm.display = vm.BY_ENTRANT;
 		
-		vm.isDisplayActive(displayInQuestion) {
+		vm.isDisplayActive = function(displayInQuestion) {
 			return vm.display === displayInQuestion;
 		}
 	}
