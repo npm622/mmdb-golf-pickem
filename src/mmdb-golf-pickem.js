@@ -44,6 +44,29 @@
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
 				results.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
 			}
+
+			for (var i = 0; i < results.entries.length; i++) {
+				var entry = results.entries[i];
+				
+				for (var j = 0; j < entry.picks.length; j++) {
+					var foundMatch = false;
+					for (var k = 0; k < results.playerDetails.length; k++) {
+						if (entry.picks[j] === results.playerDetails[k].name) {
+							results.playerDetails[k].pickedBy.push(entry.name);
+							foundMatch = true;
+						}
+					}
+					
+					if (!foundMatch) {
+						var player = {};
+						player.name = entry.picks[j];
+						player.pickedBy = [];
+						player.pickedBy.push(entry.name);
+						
+						results.playerDetails.push(player);
+					}
+				}
+			}
 		} );
 
 		$http.get( leaderboardUrl ).success( function(data) {
@@ -134,44 +157,8 @@
 		}
 	}
 	
-	function EntriesByPlayer(GoogleSheetsScraper) {
-		return {
-			collectPlayerDetails : function(entries) {
-				var uniquePlayers = [];
-				for (var i = 0; i < entries.length; i++) {
-					var entry = entries[i];
-					
-					for (var j = 0; j < entry.picks.length; j++) {
-						var foundMatch = false;
-						for (var k = 0; k < uniquePlayers.length; k++) {
-							if (entry.picks[j] === uniquePlayers[k].name) {
-								uniquePlayers[k].pickedBy.push(entry.name);
-								foundMatch = true;
-							}
-						}
-						
-						if (!foundMatch) {
-							var player = {};
-							player.name = entry.picks[j];
-							player.pickedBy = [];
-							player.pickedBy.push(entry.name);
-							
-							uniquePlayers.push(player);
-						}
-					}
-				}
-				
-				return uniquePlayers;
-			}
-		}
-	}
-	
-	function EntriesByPlayerCtrl(EntriesByPlayer, GoogleSheetsScraper) {
+	function EntriesByPlayerCtrl() {
 		var vm = this;
-		
-		vm.entries = GoogleSheetsScraper.entries;
-		
-		vm.playerDetails = EntriesByPlayer.collectPlayerDetails(vm.entries);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -200,8 +187,6 @@
 
 	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
-	.factory( 'EntriesByPlayer', [ EntriesByPlayer ] )
-
 	.controller( 'GolfPickemCtrl', [ 'GoogleSheetsScraper', GolfPickemCtrl ] )
 
 	.controller( 'PickemEntriesCtrl', [ PickemEntriesCtrl ] )
@@ -210,14 +195,15 @@
 
 	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
-	.controller( 'EntriesByPlayerCtrl', [ 'EntriesByPlayer', 'GoogleSheetsScraper', EntriesByPlayerCtrl ] )
+	.controller( 'EntriesByPlayerCtrl', [ EntriesByPlayerCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
 			restrict : 'E',
 			templateUrl : 'pickem-entries.tmpl.html',
 			scope : {
-				entries : '='
+				entries : '=',
+				playerDetails : '='
 			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
@@ -256,6 +242,7 @@
 			restrict : 'E',
 			templateUrl : 'entries-by-player.tmpl.html',
 			scope : {
+				playerDetails : '='
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',
