@@ -134,7 +134,7 @@
 		}
 	}
 	
-	function EntriesByPlayer() {
+	function EntriesByPlayer(GoogleSheetsScraper) {
 		return {
 			collectPlayerDetails : function(entries) {
 				var uniquePlayers = [];
@@ -166,14 +166,16 @@
 		}
 	}
 	
-	function EntriesByPlayerCtrl(EntriesByPlayer) {
+	function EntriesByPlayerCtrl(EntriesByPlayer, GoogleSheetsScraper) {
 		var vm = this;
+		
+		vm.entries = GoogleSheetsScraper.entries;
 		
 		vm.playerDetails = EntriesByPlayer.collectPlayerDetails(vm.entries);
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
-
+	
 	.provider( 'golfPickemConfig', function(/* INPUT */) {
 		// this.input = INPUT;
 
@@ -208,7 +210,7 @@
 
 	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
-	.controller( 'EntriesByPlayerCtrl', [ 'EntriesByPlayer', EntriesByPlayerCtrl ] )
+	.controller( 'EntriesByPlayerCtrl', [ 'EntriesByPlayer', 'GoogleSheetsScraper', EntriesByPlayerCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
@@ -254,7 +256,6 @@
 			restrict : 'E',
 			templateUrl : 'entries-by-player.tmpl.html',
 			scope : {
-				entries : '='
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',
