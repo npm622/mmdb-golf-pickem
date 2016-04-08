@@ -4,6 +4,7 @@
 	function GoogleSheetsScraper($http) {
 		var results = {
 			entries : [],
+			selections : [],
 			players : []
 		};
 
@@ -50,9 +51,9 @@
 				
 				for (var j = 0; j < entry.picks.length; j++) {
 					var foundMatch = false;
-					for (var k = 0; k < results.playerDetails.length; k++) {
-						if (entry.picks[j] === results.playerDetails[k].name) {
-							results.playerDetails[k].pickedBy.push(entry.name);
+					for (var k = 0; k < results.selections.length; k++) {
+						if (entry.picks[j] === results.selections[k].name) {
+							results.selections[k].pickedBy.push(entry.name);
 							foundMatch = true;
 						}
 					}
@@ -63,7 +64,7 @@
 						player.pickedBy = [];
 						player.pickedBy.push(entry.name);
 						
-						results.playerDetails.push(player);
+						results.selections.push(player);
 					}
 				}
 			}
@@ -87,6 +88,7 @@
 		// data
 		vm.entries = GoogleSheetsScraper.entries;
 		vm.players = GoogleSheetsScraper.players;
+		vm.selections = GoogleSheetsScraper.selections;
 
 		// view logic
 		vm.ENTRIES = 'entries';
@@ -203,7 +205,7 @@
 			templateUrl : 'pickem-entries.tmpl.html',
 			scope : {
 				entries : '=',
-				playerDetails : '='
+				selections : '='
 			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
@@ -242,7 +244,7 @@
 			restrict : 'E',
 			templateUrl : 'entries-by-player.tmpl.html',
 			scope : {
-				playerDetails : '='
+				selections : '='
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',

@@ -4,6 +4,7 @@
 	function GoogleSheetsScraper($http) {
 		var results = {
 			entries : [],
+			selections : [],
 			players : []
 		};
 
@@ -50,9 +51,9 @@
 				
 				for (var j = 0; j < entry.picks.length; j++) {
 					var foundMatch = false;
-					for (var k = 0; k < results.playerDetails.length; k++) {
-						if (entry.picks[j] === results.playerDetails[k].name) {
-							results.playerDetails[k].pickedBy.push(entry.name);
+					for (var k = 0; k < results.selections.length; k++) {
+						if (entry.picks[j] === results.selections[k].name) {
+							results.selections[k].pickedBy.push(entry.name);
 							foundMatch = true;
 						}
 					}
@@ -63,7 +64,7 @@
 						player.pickedBy = [];
 						player.pickedBy.push(entry.name);
 						
-						results.playerDetails.push(player);
+						results.selections.push(player);
 					}
 				}
 			}
@@ -87,6 +88,7 @@
 		// data
 		vm.entries = GoogleSheetsScraper.entries;
 		vm.players = GoogleSheetsScraper.players;
+		vm.selections = GoogleSheetsScraper.selections;
 
 		// view logic
 		vm.ENTRIES = 'entries';
@@ -203,7 +205,7 @@
 			templateUrl : 'pickem-entries.tmpl.html',
 			scope : {
 				entries : '=',
-				playerDetails : '='
+				selections : '='
 			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
@@ -242,7 +244,7 @@
 			restrict : 'E',
 			templateUrl : 'entries-by-player.tmpl.html',
 			scope : {
-				playerDetails : '='
+				selections : '='
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',
@@ -251,8 +253,8 @@
 	} );
 
 	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("entries-by-entrant.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in entriesByEntrant.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4> <a uib-popover=\"{{entriesByEntrant.getEntriesWithPlayer(pick)}}\"\n                        popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{entriesByEntrant.getPlayerSelectionCount(pick)}}\n                                time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");
-$templateCache.put("entries-by-player.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"playerDetail in entriesByPlayer.playerDetails\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">{{playerDetail.name}}</h3>\n            </div>\n            <ul class=\"list-group\" ng-repeat=\"picker in playerDetail.pickedBy\">\n                <li class=\"list-group-item\">\n                    <h4 class=\"list-group-item-heading\">{{picker}}</h4>\n                </li>\n            </ul>\n        </div>\n        <pre>{{playerDetail}}</pre>\n    </div>\n</div>\n\n\n");
-$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container-fluid\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-2\">\n            <div class=\"panel\">\n                <div class=\"btn-group-vertical btn-block\" role=\"group\">\n                    <label class=\"btn btn-large btn-success\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.ENTRIES\">entries</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.SCOREBOARD\">scoreboard</label>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-10\">\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.ENTRIES)\">\n                <pickem-entries entries=\"golfPickem.entries\" player-details=\"golfPickem.playerDetails\"></pickem-entries>\n            </div>\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.SCOREBOARD)\">\n                <scoreboard players=\"golfPickem.players\"></scoreboard>\n            </div>\n        </div>\n    </div>\n</div>");
-$templateCache.put("pickem-entries.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"btn-group\" role=\"group\">\n            <label class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_ENTRANT\">by entrant</label> <label\n                class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_PLAYER\">by player</label>\n        </div>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)\">\n        <entries-by-entrant entries=\"pickemEntries.entries\"></entries-by-entrant>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)\">\n    </div>\n</div>\n\n\n");
+$templateCache.put("entries-by-player.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"playerDetail in entriesByPlayer.selections\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\">{{playerDetail.name}}</h3>\n            </div>\n            <ul class=\"list-group\" ng-repeat=\"picker in playerDetail.pickedBy\">\n                <li class=\"list-group-item\">\n                    <h4 class=\"list-group-item-heading\">{{picker}}</h4>\n                </li>\n            </ul>\n        </div>\n        <pre>{{playerDetail}}</pre>\n    </div>\n</div>\n\n\n");
+$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container-fluid\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-2\">\n            <div class=\"panel\">\n                <div class=\"btn-group-vertical btn-block\" role=\"group\">\n                    <label class=\"btn btn-large btn-success\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.ENTRIES\">entries</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.SCOREBOARD\">scoreboard</label>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-10\">\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.ENTRIES)\">\n                <pickem-entries entries=\"golfPickem.entries\" selections=\"golfPickem.selections\"></pickem-entries>\n            </div>\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.SCOREBOARD)\">\n                <scoreboard players=\"golfPickem.players\"></scoreboard>\n            </div>\n        </div>\n    </div>\n</div>");
+$templateCache.put("pickem-entries.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"btn-group\" role=\"group\">\n            <label class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_ENTRANT\">by entrant</label> <label\n                class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_PLAYER\">by player</label>\n        </div>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)\">\n        <entries-by-entrant entries=\"pickemEntries.entries\"></entries-by-entrant>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)\">\n        <entries-by-player selections=\"pickemEntries.selections\"></entries-by-player>\n    </div>\n</div>\n\n\n");
 $templateCache.put("scoreboard.tmpl.html","<table class=\"table table-striped table-bordered table-hover table-sm\">\n    <thead>\n        <tr>\n            <th class=\"info text-info text-center h4\">id</th>\n            <th class=\"info text-info text-center h4\">pos</th>\n            <th class=\"info text-info text-center h4\">player</th>\n            <th class=\"info text-info text-center h4\">country</th>\n            <th class=\"info text-info text-center h4\">today</th>\n            <th class=\"info text-info text-center h4\">thru</th>\n            <th class=\"info text-info text-center h4\">to par</th>\n            <th class=\"info text-info text-center h4\">r1</th>\n            <th class=\"info text-info text-center h4\">r2</th>\n            <th class=\"info text-info text-center h4\">r3</th>\n            <th class=\"info text-info text-center h4\">r4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr ng-repeat=\"player in scoreboard.players\">\n            <td>{{player.id}}</td>\n            <td>{{player.pos}}</td>\n            <td>{{player.firstname}} {{player.lastname}}</td>\n            <td>{{player.country}}</td>\n            <td>{{player.today}}</td>\n            <td>{{player.thru}}</td>\n            <td>{{player.topar}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r1)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r2)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r3)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r4)}}</td>\n        </tr>\n    </tbody>\n</table>");}]);
 }());
