@@ -2,7 +2,7 @@
 	'use strict';
 
 	function GoogleSheetsScraper($http) {
-		var data = {
+		var results = {
 			entries : [],
 			players : []
 		};
@@ -44,36 +44,29 @@
 
 		$http.get( entriesUrl ).success( function(data) {
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
-				data.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
+				results.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
 			}
 		} );
 
 		$http.get( leaderboardUrl ).success( function(data) {
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
-				data.players.push( parseLeaderboardEntry( data.feed.entry[i] ) );
+				results.players.push( parseLeaderboardEntry( data.feed.entry[i] ) );
 			}
 		} );
 
 		return {
-			entries : data.entries,
-			players : data.players
+			entries : results.entries,
+			players : results.players
 		}
 	}
-
-	function Leaderboard(GoogleSheetsScraper) {
+	
+	function EntriesByEntrant() {
 		return {
-			players : GoogleSheetsScraper.players
-		}
-	}
-
-	function Entries(GoogleSheetsScraper) {
-		return {
-			entries : GoogleSheetsScraper.entries,
-			entriesByPlayer : function(playerName) {
+			entriesByPlayer : function(playerName, entries) {
 				var names = [];
 				var i;
-				for ( i = 0; i < GoogleSheetsScraper.entries.length; i++ ) {
-					var entry = GoogleSheetsScraper.entries[i];
+				for ( i = 0; i < entries.length; i++ ) {
+					var entry = entries[i];
 					var j;
 					for ( j = 0; j < entry.picks.length; j++ ) {
 						var pick = entry.picks[j];
@@ -87,8 +80,11 @@
 		};
 	}
 
-	function GolfPickemCtrl() {
+	function GolfPickemCtrl(GoogleSheetsScraper) {
 		var vm = this;
+		
+		vm.entries = GoogleSheetsScraper.entries;
+		vm.players = GoogleSheetsScraper.players;
 
 		vm.ENTRIES = 'entries';
 		vm.SCOREBOARD = 'scoreboard';
@@ -114,7 +110,7 @@
 		}
 	}
 
-	function PickemEntriesCtrl(Entries) {
+	function PickemEntriesCtrl() {
 		var vm = this;
 
 		vm.BY_ENTRANT = "by_entrant";
@@ -129,10 +125,8 @@
 		}
 	}
 
-	function ScoreboardCtrl(Leaderboard) {
+	function ScoreboardCtrl() {
 		var vm = this;
-
-		vm.players = Leaderboard.players;
 
 		vm.displayRoundScore = function(r) {
 			if ( r.indexOf( '||' ) > -1 ) {
@@ -145,15 +139,15 @@
 		}
 	}
 
-	function EntriesByEntrantCtrl(Entries) {
+	function EntriesByEntrantCtrl(EntriesByEntrant) {
 		var vm = this;
 
 		vm.getPlayerSelectionCount = function(playerName) {
-			return Entries.entriesByPlayer( playerName ).length;
+			return EntriesByEntrant.entriesByPlayer( playerName, entries ).length;
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
-			return Entries.entriesByPlayer( playerName );
+			return EntriesByEntrant.entriesByPlayer( playerName, entries );
 		}
 	}
 
@@ -179,25 +173,25 @@
 		} );
 	} )
 
-	.factory( 'GoogleSheetsScraper', [ '$http', Entries ] )
+	.factory( 'GoogleSheetsScraper', [ '$http', GoogleSheetsScraper ] )
 
-	.factory( 'Entries', [ 'GoogleSheetsScraper', Entries ] )
+	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
-	.factory( 'Leaderboard', [ 'GoogleSheetsScraper', Leaderboard ] )
+	.controller( 'GolfPickemCtrl', [ 'GoogleSheetsScraper', GolfPickemCtrl ] )
 
-	.controller( 'GolfPickemCtrl', [ GolfPickemCtrl ] )
+	.controller( 'PickemEntriesCtrl', [ PickemEntriesCtrl ] )
 
-	.controller( 'PickemEntriesCtrl', [ 'Entries', PickemEntriesCtrl ] )
+	.controller( 'ScoreboardCtrl', [ ScoreboardCtrl ] )
 
-	.controller( 'ScoreboardCtrl', [ 'Leaderboard', ScoreboardCtrl ] )
-
-	.controller( 'EntriesByEntrantCtrl', [ 'Entries', EntriesByEntrantCtrl ] )
+	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
 			restrict : 'E',
 			templateUrl : 'pickem-entries.tmpl.html',
-			scope : {},
+			scope : {
+				entries : '='
+			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
 			bindToController : true
@@ -208,7 +202,9 @@
 		return {
 			restrict : 'E',
 			templateUrl : 'scoreboard.tmpl.html',
-			scope : {},
+			scope : {
+				players : '='
+			},
 			controller : 'ScoreboardCtrl',
 			controllerAs : 'scoreboard',
 			bindToController : true
@@ -229,7 +225,7 @@
 	} );
 
 	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("entries-by-entrant.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in entriesByEntrant.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4> <a uib-popover=\"{{entriesByEntrant.getEntriesWithPlayer(pick)}}\"\n                        popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{entriesByEntrant.getPlayerSelectionCount(pick)}}\n                                time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");
-$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container-fluid\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-2\">\n            <div class=\"panel\">\n                <div class=\"btn-group-vertical btn-block\" role=\"group\">\n                    <label class=\"btn btn-large btn-success\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.ENTRIES\">entries</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.SCOREBOARD\">scoreboard</label>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-10\">\n            <div ng-show=\"golfPickem.display === golfPickem.ENTRIES\">\n                <pickem-entries></pickem-entries>\n            </div>\n            <div ng-show=\"golfPickem.display === golfPickem.SCOREBOARD\">\n                <scoreboard></scoreboard>\n            </div>\n        </div>\n    </div>\n</div>");
+$templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container-fluid\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-2\">\n            <div class=\"panel\">\n                <div class=\"btn-group-vertical btn-block\" role=\"group\">\n                    <label class=\"btn btn-large btn-success\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.ENTRIES\">entries</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.SCOREBOARD\">scoreboard</label>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-10\">\n            <div ng-show=\"golfPickem.display === golfPickem.ENTRIES\">\n                <pickem-entries entries=\"golfPickem.entries\"></pickem-entries>\n            </div>\n            <div ng-show=\"golfPickem.display === golfPickem.SCOREBOARD\">\n                <scoreboard players=\"golfPickem.players\"></scoreboard>\n            </div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("pickem-entries.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"btn-group\" role=\"group\">\n            <label class=\"btn btn-large\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_ENTRANT\">by entrant</label> <label\n                class=\"btn btn-large\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_PLAYER\">by player</label>\n        </div>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.display === pickemEntries.BY_ENTRANT\">\n        <entries-by-entrant entries=\"pickemEntries.entries\"></entries-by-entrant>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.display === pickemEntries.BY_PLAYER\">\n        <p>TODO: figure out this view</p>\n    </div>\n</div>\n\n\n");
 $templateCache.put("scoreboard.tmpl.html","<table class=\"table table-striped table-bordered table-hover table-sm\">\n    <thead>\n        <tr>\n            <th class=\"info text-info text-center h4\">id</th>\n            <th class=\"info text-info text-center h4\">pos</th>\n            <th class=\"info text-info text-center h4\">player</th>\n            <th class=\"info text-info text-center h4\">country</th>\n            <th class=\"info text-info text-center h4\">today</th>\n            <th class=\"info text-info text-center h4\">thru</th>\n            <th class=\"info text-info text-center h4\">to par</th>\n            <th class=\"info text-info text-center h4\">r1</th>\n            <th class=\"info text-info text-center h4\">r2</th>\n            <th class=\"info text-info text-center h4\">r3</th>\n            <th class=\"info text-info text-center h4\">r4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr ng-repeat=\"player in scoreboard.players\">\n            <td>{{player.id}}</td>\n            <td>{{player.pos}}</td>\n            <td>{{player.firstname}} {{player.lastname}}</td>\n            <td>{{player.country}}</td>\n            <td>{{player.today}}</td>\n            <td>{{player.thru}}</td>\n            <td>{{player.topar}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r1)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r2)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r3)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r4)}}</td>\n        </tr>\n    </tbody>\n</table>");}]);
 }());

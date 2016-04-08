@@ -2,7 +2,7 @@
 	'use strict';
 
 	function GoogleSheetsScraper($http) {
-		var data = {
+		var results = {
 			entries : [],
 			players : []
 		};
@@ -44,36 +44,29 @@
 
 		$http.get( entriesUrl ).success( function(data) {
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
-				data.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
+				results.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
 			}
 		} );
 
 		$http.get( leaderboardUrl ).success( function(data) {
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
-				data.players.push( parseLeaderboardEntry( data.feed.entry[i] ) );
+				results.players.push( parseLeaderboardEntry( data.feed.entry[i] ) );
 			}
 		} );
 
 		return {
-			entries : data.entries,
-			players : data.players
+			entries : results.entries,
+			players : results.players
 		}
 	}
-
-	function Leaderboard(GoogleSheetsScraper) {
+	
+	function EntriesByEntrant() {
 		return {
-			players : GoogleSheetsScraper.players
-		}
-	}
-
-	function Entries(GoogleSheetsScraper) {
-		return {
-			entries : GoogleSheetsScraper.entries,
-			entriesByPlayer : function(playerName) {
+			entriesByPlayer : function(playerName, entries) {
 				var names = [];
 				var i;
-				for ( i = 0; i < GoogleSheetsScraper.entries.length; i++ ) {
-					var entry = GoogleSheetsScraper.entries[i];
+				for ( i = 0; i < entries.length; i++ ) {
+					var entry = entries[i];
 					var j;
 					for ( j = 0; j < entry.picks.length; j++ ) {
 						var pick = entry.picks[j];
@@ -87,8 +80,11 @@
 		};
 	}
 
-	function GolfPickemCtrl() {
+	function GolfPickemCtrl(GoogleSheetsScraper) {
 		var vm = this;
+		
+		vm.entries = GoogleSheetsScraper.entries;
+		vm.players = GoogleSheetsScraper.players;
 
 		vm.ENTRIES = 'entries';
 		vm.SCOREBOARD = 'scoreboard';
@@ -114,7 +110,7 @@
 		}
 	}
 
-	function PickemEntriesCtrl(Entries) {
+	function PickemEntriesCtrl() {
 		var vm = this;
 
 		vm.BY_ENTRANT = "by_entrant";
@@ -129,10 +125,8 @@
 		}
 	}
 
-	function ScoreboardCtrl(Leaderboard) {
+	function ScoreboardCtrl() {
 		var vm = this;
-
-		vm.players = Leaderboard.players;
 
 		vm.displayRoundScore = function(r) {
 			if ( r.indexOf( '||' ) > -1 ) {
@@ -145,15 +139,15 @@
 		}
 	}
 
-	function EntriesByEntrantCtrl(Entries) {
+	function EntriesByEntrantCtrl(EntriesByEntrant) {
 		var vm = this;
 
 		vm.getPlayerSelectionCount = function(playerName) {
-			return Entries.entriesByPlayer( playerName ).length;
+			return EntriesByEntrant.entriesByPlayer( playerName, entries ).length;
 		};
 
 		vm.getEntriesWithPlayer = function(playerName) {
-			return Entries.entriesByPlayer( playerName );
+			return EntriesByEntrant.entriesByPlayer( playerName, entries );
 		}
 	}
 
@@ -179,25 +173,25 @@
 		} );
 	} )
 
-	.factory( 'GoogleSheetsScraper', [ '$http', Entries ] )
+	.factory( 'GoogleSheetsScraper', [ '$http', GoogleSheetsScraper ] )
 
-	.factory( 'Entries', [ 'GoogleSheetsScraper', Entries ] )
+	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
-	.factory( 'Leaderboard', [ 'GoogleSheetsScraper', Leaderboard ] )
+	.controller( 'GolfPickemCtrl', [ 'GoogleSheetsScraper', GolfPickemCtrl ] )
 
-	.controller( 'GolfPickemCtrl', [ GolfPickemCtrl ] )
+	.controller( 'PickemEntriesCtrl', [ PickemEntriesCtrl ] )
 
-	.controller( 'PickemEntriesCtrl', [ 'Entries', PickemEntriesCtrl ] )
+	.controller( 'ScoreboardCtrl', [ ScoreboardCtrl ] )
 
-	.controller( 'ScoreboardCtrl', [ 'Leaderboard', ScoreboardCtrl ] )
-
-	.controller( 'EntriesByEntrantCtrl', [ 'Entries', EntriesByEntrantCtrl ] )
+	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
 			restrict : 'E',
 			templateUrl : 'pickem-entries.tmpl.html',
-			scope : {},
+			scope : {
+				entries : '='
+			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
 			bindToController : true
@@ -208,7 +202,9 @@
 		return {
 			restrict : 'E',
 			templateUrl : 'scoreboard.tmpl.html',
-			scope : {},
+			scope : {
+				players : '='
+			},
 			controller : 'ScoreboardCtrl',
 			controllerAs : 'scoreboard',
 			bindToController : true
