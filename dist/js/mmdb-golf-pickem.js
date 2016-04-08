@@ -16,9 +16,8 @@
 			parsed.name = entry.title.$t;
 
 			var contents = entry.content.$t.split( "," );
-			var i;
 			parsed.picks = [];
-			for ( i = 0; i < contents.length; i++ ) {
+			for ( var i = 0; i < contents.length; i++ ) {
 				parsed.picks.push( contents[i].split( ":" )[1].trim() );
 			}
 
@@ -31,8 +30,7 @@
 			parsed.id = entry.title.$t;
 
 			var keyValues = entry.content.$t.split( "," );
-			var i;
-			for ( i = 0; i < keyValues.length; i++ ) {
+			for ( var i = 0; i < keyValues.length; i++ ) {
 				var key = keyValues[i].substring( 0, keyValues[i].indexOf( ":" ) ).trim();
 				var value = keyValues[i].substring( keyValues[i].indexOf( ":" ) + 1, keyValues[i].length ).trim();
 
@@ -57,62 +55,6 @@
 		return {
 			entries : results.entries,
 			players : results.players
-		}
-	}
-	
-	function EntriesByEntrant() {
-		return {
-			entriesByPlayer : function(playerName, entries) {
-				var names = [];
-				var i;
-				for ( i = 0; i < entries.length; i++ ) {
-					var entry = entries[i];
-					var j;
-					for ( j = 0; j < entry.picks.length; j++ ) {
-						var pick = entry.picks[j];
-						if ( pick == playerName ) {
-							names.push( entry.name );
-						}
-					}
-				}
-				return names;
-			}
-		};
-	}
-	
-	function EntriesByPlayer() {
-		var playerDetails = function(entries) {
-			var uniquePlayers = [];
-			for (var i = 0; i < entries.length; i++) {
-				var entry = entries[i];
-				
-				for (var j = 0; j < entry.picks.length; j++) {
-					var foundMatch = false;
-					for (var k = 0; k < uniquePlayers.length; k++) {
-						if (entry.picks[j] === uniquePlayers[k].name) {
-							uniquePlayers[k].pickedBy.push(entry.name);
-							foundMatch = true;
-						}
-					}
-					
-					if (!foundMatch) {
-						var player = {};
-						player.name = entry.picks[j];
-						player.pickedBy = [];
-						player.pickedBy.push(entry.name);
-						
-						uniquePlayers.push(player);
-					}
-				}
-			}
-			
-			return uniquePlayers;
-		}
-	
-		return {
-			collectPlayerDetails : function(entries) {
-				return playerDetails(entries);
-			}
 		}
 	}
 
@@ -161,6 +103,24 @@
 			}
 		}
 	}
+	
+	function EntriesByEntrant() {
+		return {
+			entriesByPlayer : function(playerName, entries) {
+				var names = [];
+				for ( var i = 0; i < entries.length; i++ ) {
+					var entry = entries[i];
+					for ( var j = 0; j < entry.picks.length; j++ ) {
+						var pick = entry.picks[j];
+						if ( pick == playerName ) {
+							names.push( entry.name );
+						}
+					}
+				}
+				return names;
+			}
+		};
+	}
 
 	function EntriesByEntrantCtrl(EntriesByEntrant) {
 		var vm = this;
@@ -171,6 +131,38 @@
 
 		vm.getEntriesWithPlayer = function(playerName) {
 			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
+		}
+	}
+	
+	function EntriesByPlayer() {
+		return {
+			collectPlayerDetails : function(entries) {
+				var uniquePlayers = [];
+				for (var i = 0; i < entries.length; i++) {
+					var entry = entries[i];
+					
+					for (var j = 0; j < entry.picks.length; j++) {
+						var foundMatch = false;
+						for (var k = 0; k < uniquePlayers.length; k++) {
+							if (entry.picks[j] === uniquePlayers[k].name) {
+								uniquePlayers[k].pickedBy.push(entry.name);
+								foundMatch = true;
+							}
+						}
+						
+						if (!foundMatch) {
+							var player = {};
+							player.name = entry.picks[j];
+							player.pickedBy = [];
+							player.pickedBy.push(entry.name);
+							
+							uniquePlayers.push(player);
+						}
+					}
+				}
+				
+				return uniquePlayers;
+			}
 		}
 	}
 	
