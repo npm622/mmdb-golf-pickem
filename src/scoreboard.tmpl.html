@@ -1,10 +1,10 @@
-
 <table class="table table-striped table-bordered table-hover table-sm">
     <thead>
         <tr>
             <th>id</th>
             <th>pos</th>
             <th>player</th>
+            <th>country</th>
             <th>today</th>
             <th>thru</th>
             <th>to par</th>
@@ -18,7 +18,8 @@
         <tr ng-repeat="player in scoreboard.players">
             <td>{{player.id}}</td>
             <td>{{player.pos}}</td>
-            <td>{{player.firstname}} {{player.lastname}} ({{player.country}})</td>
+            <td>{{player.firstname}} {{player.lastname}}</td>
+            <td>{{player.country}}</td>
             <td>{{player.today}}</td>
             <td>{{player.thru}}</td>
             <td>{{player.topar}}</td>

@@ -90,7 +90,6 @@
 		vm.ENTRIES = 'entries';
 		vm.SCOREBOARD = 'scoreboard';
 
-		// scoreboard, entries, ...
 		vm.display = vm.SCOREBOARD;
 
 		vm.toggleDisplay = function() {
@@ -172,7 +171,7 @@
 
 	.controller( 'PickemEntriesCtrl', [ 'Entries', PickemEntriesCtrl ] )
 
-	.controller( 'ScoreboardCtrl', [ 'Entries', ScoreboardCtrl ] )
+	.controller( 'ScoreboardCtrl', [ 'Leaderboard', ScoreboardCtrl ] )
 
 	.directive( 'pickemEntries', function() {
 		return {
@@ -185,7 +184,7 @@
 		}
 	} )
 
-	.directive( 'scoreboardEntries', function() {
+	.directive( 'scoreboard', function() {
 		return {
 			restrict : 'E',
 			templateUrl : 'scoreboard.tmpl.html',
