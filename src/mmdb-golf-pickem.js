@@ -113,6 +113,9 @@
 
 	function PickemEntriesCtrl(Entries) {
 		var vm = this;
+		
+		vm.BY_ENTRANT = "by_entrant";
+		vm.BY_PLAYER = "by_player";
 
 		vm.entries = Entries.entries;
 
@@ -122,6 +125,12 @@
 
 		vm.getEntriesWithPlayer = function(playerName) {
 			return Entries.entriesByPlayer( playerName );
+		}
+		
+		vm.display = vm.BY_ENTRANT;
+		
+		vm.isDisplayActive(displayInQuestion) {
+			return vm.display === displayInQuestion;
 		}
 	}
 
