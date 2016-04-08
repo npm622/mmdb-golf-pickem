@@ -1,15 +1,15 @@
 <div class="container">
     <div class="row">
         <div class="btn-group" role="group">
-            <label class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_ENTRANT">by entrant</label> <label
-                class="btn btn-large" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_PLAYER">by player</label>
+            <label class="btn btn-large btn-primary" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_ENTRANT">by entrant</label> <label
+                class="btn btn-large btn-primary" ng-model="pickemEntries.display" uib-btn-radio="pickemEntries.BY_PLAYER">by player</label>
         </div>
     </div>
     <div class="row spacer" ng-show="pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)">
         <entries-by-entrant entries="pickemEntries.entries"></entries-by-entrant>
     </div>
     <div class="row spacer" ng-show="pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)">
-        <p>TODO: figure out this view</p>
+        <entries-by-player entries="pickemEntries.entries" players="pickemEntries.players"></entries-by-player>
     </div>
 </div>
 

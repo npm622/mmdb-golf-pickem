@@ -79,6 +79,12 @@
 			}
 		};
 	}
+	
+	function EntriesByPlayer() {
+		return {
+			tableRows = [];
+		}
+	}
 
 	function GolfPickemCtrl(GoogleSheetsScraper) {
 		var vm = this;
@@ -137,6 +143,12 @@
 			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
 		}
 	}
+	
+	function EntriesByPlayerCtrl(EntriesByPlayer) {
+		var vm = this;
+		
+		vm.rows = EntriesByPlayer.tableRows;
+	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
 
@@ -164,6 +176,8 @@
 
 	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
+	.factory( 'EntriesByPlayer', [ EntriesByPlayer ] )
+
 	.controller( 'GolfPickemCtrl', [ 'GoogleSheetsScraper', GolfPickemCtrl ] )
 
 	.controller( 'PickemEntriesCtrl', [ PickemEntriesCtrl ] )
@@ -172,12 +186,15 @@
 
 	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
+	.controller( 'EntriesByPlayerCtrl', [ 'EntriesByPlayer', EntriesByPlayerCtrl ] )
+
 	.directive( 'pickemEntries', function() {
 		return {
 			restrict : 'E',
 			templateUrl : 'pickem-entries.tmpl.html',
 			scope : {
-				entries : '='
+				entries : '=',
+				players : '='
 			},
 			controller : 'PickemEntriesCtrl',
 			controllerAs : 'pickemEntries',
@@ -207,6 +224,20 @@
 			},
 			controller : 'EntriesByEntrantCtrl',
 			controllerAs : 'entriesByEntrant',
+			bindToController : true
+		}
+	} )
+
+	.directive( 'entriesByPlayer', function() {
+		return {
+			restrict : 'E',
+			templateUrl : 'entries-by-player.tmpl.html',
+			scope : {
+				entries : '=',
+				players : '='
+			},
+			controller : 'EntriesByPlayerCtrl',
+			controllerAs : 'entriesByPlayer',
 			bindToController : true
 		}
 	} );
