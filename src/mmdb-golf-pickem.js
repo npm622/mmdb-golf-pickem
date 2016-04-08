@@ -78,6 +78,7 @@
 
 		return {
 			entries : results.entries,
+			selections : results.selections,
 			players : results.players
 		}
 	}

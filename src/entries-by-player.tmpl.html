@@ -1,16 +1,17 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-3" ng-repeat="playerDetail in entriesByPlayer.selections">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{playerDetail.name}}</h3>
+        <div class="col-md-3" ng-repeat="selection in entriesByPlayer.selections">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{selection.name}}</h3>
+                </div>
+                <ul class="list-group" ng-repeat="picker in selection.pickedBy">
+                    <li class="list-group-item">
+                        <h4 class=list-group-item-heading">{{picker}}</h4>
+                    </li>
+                </ul>
             </div>
-            <ul class="list-group" ng-repeat="picker in playerDetail.pickedBy">
-                <li class="list-group-item">
-                    <h4 class="list-group-item-heading">{{picker}}</h4>
-                </li>
-            </ul>
         </div>
-        <pre>{{playerDetail}}</pre>
     </div>
 </div>
 
