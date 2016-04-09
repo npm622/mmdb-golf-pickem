@@ -255,5 +255,5 @@
 		}
 	} );
 
-//	 @@templateCache
+	 @@templateCache
 }());
