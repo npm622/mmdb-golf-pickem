@@ -41,36 +41,34 @@
 			return parsed;
 		}
 
-		function getEntries(){
-			$http.get( entriesUrl ).success( function(data) {
-				for ( var i = 0; i < data.feed.entry.length; i++ ) {
-					results.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
-				}
-	
-				for (var i = 0; i < results.entries.length; i++) {
-					var entry = results.entries[i];
-					
-					for (var j = 0; j < entry.picks.length; j++) {
-						var foundMatch = false;
-						for (var k = 0; k < results.selections.length; k++) {
-							if (entry.picks[j] === results.selections[k].name) {
-								results.selections[k].pickedBy.push(entry.name);
-								foundMatch = true;
-							}
-						}
-						
-						if (!foundMatch) {
-							var player = {};
-							player.name = entry.picks[j];
-							player.pickedBy = [];
-							player.pickedBy.push(entry.name);
-							
-							results.selections.push(player);
+		$http.get( entriesUrl ).success( function(data) {
+			for ( var i = 0; i < data.feed.entry.length; i++ ) {
+				results.entries.push( parseEntriesEntry( data.feed.entry[i] ) );
+			}
+
+			for ( var i = 0; i < results.entries.length; i++ ) {
+				var entry = results.entries[i];
+
+				for ( var j = 0; j < entry.picks.length; j++ ) {
+					var foundMatch = false;
+					for ( var k = 0; k < results.selections.length; k++ ) {
+						if ( entry.picks[j] === results.selections[k].name ) {
+							results.selections[k].pickedBy.push( entry.name );
+							foundMatch = true;
 						}
 					}
+
+					if ( !foundMatch ) {
+						var player = {};
+						player.name = entry.picks[j];
+						player.pickedBy = [];
+						player.pickedBy.push( entry.name );
+
+						results.selections.push( player );
+					}
 				}
-			} );
-		}
+			}
+		} );
 
 		$http.get( leaderboardUrl ).success( function(data) {
 			for ( var i = 0; i < data.feed.entry.length; i++ ) {
@@ -87,7 +85,7 @@
 
 	function GolfPickemCtrl(GoogleSheetsScraper) {
 		var vm = this;
-		
+
 		// data
 		vm.entries = GoogleSheetsScraper.entries;
 		vm.players = GoogleSheetsScraper.players;
@@ -131,7 +129,7 @@
 			}
 		}
 	}
-	
+
 	function EntriesByEntrant() {
 		return {
 			entriesByPlayer : function(playerName, entries) {
@@ -161,13 +159,13 @@
 			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
 		}
 	}
-	
+
 	function EntriesByPlayerCtrl() {
 		var vm = this;
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
-	
+
 	.provider( 'golfPickemConfig', function(/* INPUT */) {
 		// this.input = INPUT;
 
