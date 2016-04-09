@@ -77,7 +77,7 @@
 		} );
 
 		return {
-			entries : getEntries,
+			entries : results.entries,
 			selections : results.selections,
 			players : results.players
 		}
