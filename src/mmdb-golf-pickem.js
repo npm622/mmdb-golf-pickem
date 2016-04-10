@@ -116,17 +116,24 @@
 		}
 	}
 
-	function ScoreboardCtrl() {
+	function Scoreboard() {
+		return {
+			entriesByPlayer : {}
+		};
+	}
+
+	function ScoreboardCtrl(Scoreboard, EntriesByEntrant) {
 		var vm = this;
 
 		vm.displayRoundScore = function(r) {
-			if ( r.indexOf( '||' ) > -1 ) {
-				return '--';
-			} else if ( r.startsWith( '|' ) ) {
-				return r.substring( 1, 3 );
-			} else {
-				return r;
-			}
+			var pipesRegex = /\|(.*?)\|/;
+			var match = pipesRegex.exec( r );
+			return match[1];
+			;
+		}
+
+		vm.getEntriesWithPlayer = function(playerName) {
+			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
 		}
 	}
 
@@ -190,11 +197,13 @@
 
 	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
+	.factory( 'Scoreboard', [ Scoreboard ] )
+
 	.controller( 'GolfPickemCtrl', [ 'GoogleSheetsScraper', GolfPickemCtrl ] )
 
 	.controller( 'PickemEntriesCtrl', [ PickemEntriesCtrl ] )
 
-	.controller( 'ScoreboardCtrl', [ ScoreboardCtrl ] )
+	.controller( 'ScoreboardCtrl', [ 'Scoreboard', 'EntriesByEntrant', ScoreboardCtrl ] )
 
 	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
@@ -219,6 +228,7 @@
 			restrict : 'E',
 			templateUrl : 'scoreboard.tmpl.html',
 			scope : {
+				entries : '=',
 				players : '='
 			},
 			controller : 'ScoreboardCtrl',

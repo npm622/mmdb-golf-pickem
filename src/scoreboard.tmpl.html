@@ -18,7 +18,7 @@
         <tr ng-repeat="player in scoreboard.players">
             <td>{{player.id}}</td>
             <td>{{player.pos}}</td>
-            <td>{{player.firstname}} {{player.lastname}}</td>
+            <td><a uib-popover="{{scoreboard.getEntriesWithPlayer(pick)}}" popover-title="Picked By:" popover-trigger="outsideClick">{{player.firstname}} {{player.lastname}}</a></td>
             <td>{{player.country}}</td>
             <td>{{player.today}}</td>
             <td>{{player.thru}}</td>
