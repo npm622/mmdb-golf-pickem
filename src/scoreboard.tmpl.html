@@ -15,10 +15,10 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="player in scoreboard.players">
+        <tr ng-repeat="player in scoreboard.players" ng-class="{ 'info' : scoreboard.isSelectedPlayer(player.firstname + ' ' + player.lastname) }">
             <td>{{player.id}}</td>
             <td>{{player.pos}}</td>
-            <td><a uib-popover="{{scoreboard.getEntriesWithPlayer(pick)}}" popover-title="Picked By:" popover-trigger="outsideClick">{{player.firstname}} {{player.lastname}}</a></td>
+            <td><a uib-popover="{{scoreboard.getEntriesWithPlayer(player.firstname + ' ' + player.lastname)}}" popover-title="Picked By:" popover-trigger="outsideClick">{{player.firstname}} {{player.lastname}}</a></td>
             <td>{{player.country}}</td>
             <td>{{player.today}}</td>
             <td>{{player.thru}}</td>

@@ -135,6 +135,10 @@
 		vm.getEntriesWithPlayer = function(playerName) {
 			return EntriesByEntrant.entriesByPlayer( playerName, vm.entries );
 		}
+		
+		vm.isSelectedPlayer = function(playerName) {
+			return vm.getEntriesWithPlayer(playerName).length > 0;
+		}
 	}
 
 	function EntriesByEntrant() {
