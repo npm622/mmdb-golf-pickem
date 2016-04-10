@@ -139,6 +139,15 @@
 		vm.isSelectedPlayer = function(playerName) {
 			return vm.getEntriesWithPlayer(playerName).length > 0;
 		}
+		
+		vm.getSharesText = function(playerName) {
+			var shares = vm.getEntriesWithPlayer(playerName).length;
+			if (shares > 0) {
+				return '( ' + shares + ' shares )';
+			} else {
+				return '';
+			}
+		}
 	}
 
 	function EntriesByEntrant() {
