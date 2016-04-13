@@ -1,1 +1,14 @@
-<p>this will be the payouts screen.</p>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th class="info text-info text-center h4">name</th>
+            <th class="info text-info text-center h4">amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="winning in payouts.winnings">
+            <td>{{winning.name}}</td>
+            <td>{{winning.amount}}</td>
+        </tr>
+    </tbody>
+</table>

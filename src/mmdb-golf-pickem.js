@@ -6,8 +6,12 @@
 		
 		var parsePayoutsEntry = function(entry) {
 			var parsed = {};
-			parsed.test = 'test';
-			console.log(entry);
+			
+			parsed.player = entry.title.$t;
+			
+			var content = entry.content.$t; 
+			parsed.amount = content.split( ":" )[1].trim();
+			
 			return parsed;
 		}
 		
@@ -18,7 +22,7 @@
 			parsePayouts : function(data) {
 				var results = [];
 				for ( var i = 0; i < data.feed.entry.length; i++ ) {
-					results.entries.push( parsePayoutsEntry( data.feed.entry[i] ) );
+					results.push( parsePayoutsEntry( data.feed.entry[i] ) );
 				}
 				return results;
 			}
@@ -211,6 +215,16 @@
 
 	function PayoutsCtrl(Payouts, EntriesByEntrant) {
 		var vm = this;
+
+		vm.winnings = [];
+
+		Payouts.getPayouts().success( function(data) {
+			var payouts = Payouts.parsePayouts(data);
+			for (var i = 0; i < payouts.length; i++) {
+				vm.winnings.push(payouts[i]);
+			}
+			console.log(vm.winnings);
+		});
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )

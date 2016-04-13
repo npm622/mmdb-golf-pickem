@@ -6,8 +6,12 @@
 		
 		var parsePayoutsEntry = function(entry) {
 			var parsed = {};
-			parsed.test = 'test';
-			console.log(entry);
+			
+			parsed.player = entry.title.$t;
+			
+			var content = entry.content.$t; 
+			parsed.amount = content.split( ":" )[1].trim();
+			
 			return parsed;
 		}
 		
@@ -18,7 +22,7 @@
 			parsePayouts : function(data) {
 				var results = [];
 				for ( var i = 0; i < data.feed.entry.length; i++ ) {
-					results.entries.push( parsePayoutsEntry( data.feed.entry[i] ) );
+					results.push( parsePayoutsEntry( data.feed.entry[i] ) );
 				}
 				return results;
 			}
@@ -211,6 +215,16 @@
 
 	function PayoutsCtrl(Payouts, EntriesByEntrant) {
 		var vm = this;
+
+		vm.winnings = [];
+
+		Payouts.getPayouts().success( function(data) {
+			var payouts = Payouts.parsePayouts(data);
+			for (var i = 0; i < payouts.length; i++) {
+				vm.winnings.push(payouts[i]);
+			}
+			console.log(vm.winnings);
+		});
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
@@ -325,7 +339,7 @@
 	 angular.module("mmdb.golfPickem").run(["$templateCache", function($templateCache) {$templateCache.put("entries-by-entrant.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"entry in entriesByEntrant.entries\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{entry.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"pick in entry.picks\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{pick}}</h4> <a uib-popover=\"{{entriesByEntrant.getEntriesWithPlayer(pick)}}\"\n                        popover-title=\"Common Entries\" popover-trigger=\"outsideClick\"><em>Selected {{entriesByEntrant.getPlayerSelectionCount(pick)}}\n                                time(s).</em></a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");
 $templateCache.put("entries-by-player.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-3\" ng-repeat=\"selection in entriesByPlayer.selections\">\n            <div class=\"panel panel-success\">\n                <div class=\"panel-heading\">\n                    <h3 class=\"panel-title\">{{selection.name}}</h3>\n                </div>\n                <ul class=\"list-group\" ng-repeat=\"picker in selection.pickedBy\">\n                    <li class=\"list-group-item\">\n                        <h4 class=list-group-item-heading\">{{picker}}</h4>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n");
 $templateCache.put("mmdb-golf-pickem.tmpl.html","<div class=\"container-fluid\">\n    <div class=\"row spacer\">\n        <div class=\"col-md-2\">\n            <div class=\"panel\">\n                <div class=\"btn-group-vertical btn-block\" role=\"group\">\n                    <label class=\"btn btn-large btn-success\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.ENTRIES\">entries</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.SCOREBOARD\">scoreboard</label> <label\n                        class=\"btn btn-large btn-info\" ng-model=\"golfPickem.display\" uib-btn-radio=\"golfPickem.PAYOUTS\">payouts</label>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-10\">\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.ENTRIES)\">\n                <pickem-entries entries=\"golfPickem.entries\" selections=\"golfPickem.selections\"></pickem-entries>\n            </div>\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.SCOREBOARD)\">\n                <scoreboard entries=\"golfPickem.entries\" players=\"golfPickem.players\"></scoreboard>\n            </div>\n            <div ng-show=\"golfPickem.isDisplayActive(golfPickem.PAYOUTS)\">\n                <payouts entries=\"golfPickem.entries\"></payouts>\n            </div>\n        </div>\n    </div>\n</div>");
-$templateCache.put("payouts.tmpl.html","<p>this will be the payouts screen.</p>");
+$templateCache.put("payouts.tmpl.html","<table class=\"table table-bordered table-sm\">\n    <thead>\n        <tr>\n            <th class=\"info text-info text-center h4\">name</th>\n            <th class=\"info text-info text-center h4\">amount</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr ng-repeat=\"winning in payouts.winnings\">\n            <td>{{winning.name}}</td>\n            <td>{{winning.amount}}</td>\n        </tr>\n    </tbody>\n</table>");
 $templateCache.put("pickem-entries.tmpl.html","<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"btn-group\" role=\"group\">\n            <label class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_ENTRANT\">by entrant</label> <label\n                class=\"btn btn-large btn-primary\" ng-model=\"pickemEntries.display\" uib-btn-radio=\"pickemEntries.BY_PLAYER\">by player</label>\n        </div>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_ENTRANT)\">\n        <entries-by-entrant entries=\"pickemEntries.entries\"></entries-by-entrant>\n    </div>\n    <div class=\"row spacer\" ng-show=\"pickemEntries.isDisplayActive(pickemEntries.BY_PLAYER)\">\n        <entries-by-player selections=\"pickemEntries.selections\"></entries-by-player>\n    </div>\n</div>\n\n\n");
 $templateCache.put("scoreboard.tmpl.html","<table class=\"table table-bordered table-sm\">\n    <thead>\n        <tr>\n            <th class=\"info text-info text-center h4\">id</th>\n            <th class=\"info text-info text-center h4\">pos</th>\n            <th class=\"info text-info text-center h4\">player</th>\n            <th class=\"info text-info text-center h4\">country</th>\n            <th class=\"info text-info text-center h4\">today</th>\n            <th class=\"info text-info text-center h4\">thru</th>\n            <th class=\"info text-info text-center h4\">to par</th>\n            <th class=\"info text-info text-center h4\">r1</th>\n            <th class=\"info text-info text-center h4\">r2</th>\n            <th class=\"info text-info text-center h4\">r3</th>\n            <th class=\"info text-info text-center h4\">r4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr ng-repeat=\"player in scoreboard.players\" ng-class=\"{ \'active\' : scoreboard.isSelectedPlayer(player.firstname + \' \' + player.lastname) }\">\n            <td>{{player.id}}</td>\n            <td>{{player.pos}}</td>\n            <td><a uib-popover=\"{{scoreboard.getEntriesWithPlayer(player.firstname + \' \' + player.lastname)}}\" popover-title=\"Picked By:\" popover-trigger=\"outsideClick\">{{player.firstname}} {{player.lastname}} {{scoreboard.getSharesText(player.firstname + \' \' + player.lastname)}}</a></td>\n            <td>{{player.country}}</td>\n            <td>{{player.today}}</td>\n            <td>{{player.thru}}</td>\n            <td>{{player.topar}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r1)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r2)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r3)}}</td>\n            <td>{{scoreboard.displayRoundScore(player.r4)}}</td>\n        </tr>\n    </tbody>\n</table>");}]);
 }());
