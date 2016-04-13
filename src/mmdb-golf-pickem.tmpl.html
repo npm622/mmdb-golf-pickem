@@ -4,7 +4,8 @@
             <div class="panel">
                 <div class="btn-group-vertical btn-block" role="group">
                     <label class="btn btn-large btn-success" ng-model="golfPickem.display" uib-btn-radio="golfPickem.ENTRIES">entries</label> <label
-                        class="btn btn-large btn-info" ng-model="golfPickem.display" uib-btn-radio="golfPickem.SCOREBOARD">scoreboard</label>
+                        class="btn btn-large btn-info" ng-model="golfPickem.display" uib-btn-radio="golfPickem.SCOREBOARD">scoreboard</label> <label
+                        class="btn btn-large btn-info" ng-model="golfPickem.display" uib-btn-radio="golfPickem.PAYOUTS">payouts</label>
                 </div>
             </div>
         </div>
@@ -14,6 +15,9 @@
             </div>
             <div ng-show="golfPickem.isDisplayActive(golfPickem.SCOREBOARD)">
                 <scoreboard entries="golfPickem.entries" players="golfPickem.players"></scoreboard>
+            </div>
+            <div ng-show="golfPickem.isDisplayActive(golfPickem.PAYOUTS)">
+                <payouts entries="golfPickem.entries"></payouts>
             </div>
         </div>
     </div>

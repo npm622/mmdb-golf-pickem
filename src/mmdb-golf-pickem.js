@@ -1,5 +1,29 @@
 (function() {
 	'use strict';
+	
+	function Payouts($http) {
+		var url = 'https://spreadsheets.google.com/feeds/list/1yvcZwKzj-BfUV-8xeOwzyH88go-DPDB4oxqZtuuQCYk/default/public/values?alt=json';
+		
+		var parsePayoutsEntry = function(entry) {
+			var parsed = {};
+			parsed.test = 'test';
+			console.log(entry);
+			return parsed;
+		}
+		
+		return {
+			getPayouts : function() {
+				return $http.get(url);
+			},
+			parsePayouts : function(data) {
+				var results = [];
+				for ( var i = 0; i < data.feed.entry.length; i++ ) {
+					results.entries.push( parsePayoutsEntry( data.feed.entry[i] ) );
+				}
+				return results;
+			}
+		}
+	}
 
 	function GoogleSheetsScraper($http) {
 		var results = {
@@ -94,6 +118,7 @@
 		// view logic
 		vm.ENTRIES = 'entries';
 		vm.SCOREBOARD = 'scoreboard';
+		vm.PAYOUTS = 'payouts';
 
 		vm.display = vm.SCOREBOARD;
 
@@ -184,6 +209,10 @@
 		var vm = this;
 	}
 
+	function PayoutsCtrl(Payouts, EntriesByEntrant) {
+		var vm = this;
+	}
+
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
 
 	.provider( 'golfPickemConfig', function(/* INPUT */) {
@@ -208,6 +237,8 @@
 
 	.factory( 'GoogleSheetsScraper', [ '$http', GoogleSheetsScraper ] )
 
+	.factory( 'Payouts', [ '$http', Payouts ] )
+
 	.factory( 'EntriesByEntrant', [ EntriesByEntrant ] )
 
 	.factory( 'Scoreboard', [ Scoreboard ] )
@@ -221,6 +252,8 @@
 	.controller( 'EntriesByEntrantCtrl', [ 'EntriesByEntrant', EntriesByEntrantCtrl ] )
 
 	.controller( 'EntriesByPlayerCtrl', [ EntriesByPlayerCtrl ] )
+	
+	.controller( 'PayoutsCtrl', [ 'Payouts', 'EntriesByEntrant', PayoutsCtrl ])
 
 	.directive( 'pickemEntries', function() {
 		return {
@@ -272,6 +305,19 @@
 			},
 			controller : 'EntriesByPlayerCtrl',
 			controllerAs : 'entriesByPlayer',
+			bindToController : true
+		}
+	} )
+
+	.directive( 'payouts', function() {
+		return {
+			restrict : 'E',
+			templateUrl : 'payouts.tmpl.html',
+			scope : {
+				entries : '='
+			},
+			controller : 'PayoutsCtrl',
+			controllerAs : 'payouts',
 			bindToController : true
 		}
 	} );
