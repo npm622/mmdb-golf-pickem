@@ -215,23 +215,45 @@
 
 	function PayoutsCtrl(Payouts, EntriesByEntrant) {
 		var vm = this;
+		
+		vm.sortType = 'amount';
+		vm.sortReverse = false;
 
 		vm.winnings = [];
 
 		Payouts.getPayouts().success( function(data) {
 			var payouts = Payouts.parsePayouts(data);
 			for (var i = 0; i < payouts.length; i++) {
-				vm.winnings.push(payouts[i]);
+				var payout = payouts[i];
+				
+				payout.shares = EntriesByEntrant.entriesByPlayer( payout.player, vm.entries ).length
+				payout.perShare = payout.amount / payout.shares;
+				
+				vm.winnings.push(payout);
 			}
 			console.log(vm.winnings);
 		});
 		
-		vm.determineEntryRank = function(entry) {
-			console.log(entry);
+		vm.determineEntryTotal = function(entry) {
+			var total = 0;
+			
+			for (var i = 0; i < entry.picks.length; i++) {
+				total += vm.findPlayersPerShareAmount(entry.picks[i]);
+			}
+			
+			return total;
 		}
 		
-		vm.determineEntryTotal = function(entry) {
-			console.log(entry);
+		vm.findPlayersPerShareAmount = function(playerName) {
+			var perShare = 0;
+			for (var i = 0; i < vm.winnings.length; i++) {
+				var winning = vm.winnings[i];
+				if (winning.player === playerName) {
+					perShare = winning.perShare;
+					break;
+				}
+			}
+			return perShare;
 		}
 	}
 
