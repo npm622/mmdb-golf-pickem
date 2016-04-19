@@ -225,6 +225,14 @@
 			}
 			console.log(vm.winnings);
 		});
+		
+		vm.determineEntryRank = function(entry) {
+			console.log(entry);
+		}
+		
+		vm.determineEntryTotal = function(entry) {
+			console.log(entry);
+		}
 	}
 
 	angular.module( 'mmdb.golfPickem', [ 'ui.router', 'ui.bootstrap' ] )
